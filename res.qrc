@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/pause-circle-fill.png</file>
+        <file>res/heart.png</file>
+        <file>res/heart-fill.png</file>
+        <file>res/repeat-fill.png</file>
+        <file>res/skip-back-fill.png</file>
+        <file>res/skip-forward-fill.png</file>
+        <file>res/volume-up-line.png</file>
+        <file>res/heart1.png</file>
+        <file>res/close0.png</file>
+        <file>res/close1.png</file>
+        <file>res/circle-fill.png</file>
+        <file>res/play-circle-fill.png</file>
+        <file>res/icon.png</file>
+        <file>res/search.png</file>
+        <file>res/nopage.png</file>
+    </qresource>
+</RCC>
