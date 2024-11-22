@@ -1,4 +1,4 @@
-QT       += core gui network multimedia
+QT       += core gui network multimedia sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,9 +10,11 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
+    usemysql.cpp \
     widget.cpp
 
 HEADERS += \
+    usemysql.h \
     widget.h
 
 FORMS += \

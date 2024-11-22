@@ -13,6 +13,9 @@
 #include <QJsonArray>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QListWidgetItem>
+
+#include "usemysql.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -52,6 +55,8 @@ private slots:
     void on_volumeSlider_valueChanged(int value);//音量条
     void on_pushButton_search_clicked();
     void initPlayer();
+    void on_pushButton_Prev_clicked(); //上一曲
+    void on_pushButton_Next_clicked();//下一曲
 
 private:
     Ui::Widget* ui;
@@ -59,11 +64,24 @@ private:
     bool mbPressed;//鼠标按下标志（不分左右键）
     QMediaPlayer* player;
     QMediaPlaylist* playlist;
+    QMediaPlaylist* m_LocalPlaylist;
+    QMediaPlaylist* m_NetworkPlaylist;
     QString* ctime;//当前时长
     QString* ttime;//总时长
-    QNetworkReply* reply;
-    void parseSongsJsonData(QByteArray rawData);
+    QString musicName;//音乐名
+    QString musicAuthor;//音乐作者
+    QString musicPicUrl;//封面图片
+    QString musicUrl;//音乐地址
+    QStringList musicNameList;
+    QStringList musicUrlList;
+    QStringList musicAuthorList;
+    QStringList musicPicUrlList;
     QString songID;
+    QNetworkReply* reply;
+    void initBottom(QString musicName, QString musicAuthor, QString musicPicUrl);
+    void setBottomByIndex(int index);
+    void parseSongsJsonData(QByteArray rawData);
+    void useMysql();//mysql
 };
 
 #endif // WIDGET_H

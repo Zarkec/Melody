@@ -209,15 +209,26 @@ border-radius: 25px;</string>
               </rect>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(42, 42, 42);</string>
+              <string notr="true">background-color: rgb(42, 42, 42);
+color: rgb(255, 255, 255);</string>
              </property>
              <widget class="QTableWidget" name="tableWidgetLocal">
               <property name="geometry">
                <rect>
                 <x>10</x>
                 <y>10</y>
-                <width>891</width>
-                <height>451</height>
+                <width>851</width>
+                <height>161</height>
+               </rect>
+              </property>
+             </widget>
+             <widget class="QListWidget" name="listWidgetLocal">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>230</y>
+                <width>661</width>
+                <height>192</height>
                </rect>
               </property>
              </widget>
@@ -491,7 +502,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_shangyiqu">
+                <widget class="QPushButton" name="pushButton_Prev">
                  <property name="minimumSize">
                   <size>
                    <width>35</width>
@@ -560,7 +571,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_xaiyiqu">
+                <widget class="QPushButton" name="pushButton_Next">
                  <property name="minimumSize">
                   <size>
                    <width>35</width>
