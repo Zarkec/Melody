@@ -1,19 +1,21 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/pause-circle-fill.png</file>
-        <file>res/heart.png</file>
-        <file>res/heart-fill.png</file>
-        <file>res/repeat-fill.png</file>
-        <file>res/skip-back-fill.png</file>
-        <file>res/skip-forward-fill.png</file>
-        <file>res/volume-up-line.png</file>
-        <file>res/heart1.png</file>
-        <file>res/close0.png</file>
-        <file>res/close1.png</file>
-        <file>res/circle-fill.png</file>
-        <file>res/play-circle-fill.png</file>
-        <file>res/icon.png</file>
-        <file>res/search.png</file>
-        <file>res/nopage.png</file>
+        <file>res/img/circle-fill.png</file>
+        <file>res/img/close0.png</file>
+        <file>res/img/close1.png</file>
+        <file>res/img/heart.png</file>
+        <file>res/img/heart1.png</file>
+        <file>res/img/heart-fill.png</file>
+        <file>res/img/icon.png</file>
+        <file>res/img/ku.png</file>
+        <file>res/img/ku1.png</file>
+        <file>res/img/nopage.png</file>
+        <file>res/img/pause-circle-fill.png</file>
+        <file>res/img/play-circle-fill.png</file>
+        <file>res/img/repeat-fill.png</file>
+        <file>res/img/search.png</file>
+        <file>res/img/skip-back-fill.png</file>
+        <file>res/img/skip-forward-fill.png</file>
+        <file>res/img/volume-up-line.png</file>
     </qresource>
 </RCC>
