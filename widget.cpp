@@ -7,7 +7,7 @@ Widget::Widget(QWidget* parent)
 {
     ui->setupUi(this);
     setWindowTitle("Melody");
-    setWindowIcon(QIcon(":/res/icon.png"));
+    setWindowIcon(QIcon(":/res/img/icon.png"));
     setAttribute(Qt::WA_TranslucentBackground);//背景透明
     setWindowFlags(Qt::FramelessWindowHint);//无边框
     mbPressed = false;
@@ -23,6 +23,7 @@ Widget::Widget(QWidget* parent)
 
     useMysql();
     initPlayer();
+    switchPage();
 }
 
 Widget::~Widget()
@@ -165,8 +166,91 @@ void Widget::useMysql()
 {
     UseMySQL::instance()->getMusicInfos(musicNameList, musicUrlList, musicAuthorList, musicPicUrlList);
     qDebug() << musicNameList;
-    qDebug() << musicUrlList;
 
+    // 检查数据是否正确读取
+    qDebug() << "Music Names:" << musicNameList;
+    qDebug() << "Music URLs:" << musicUrlList;
+    qDebug() << "Music Authors:" << musicAuthorList;
+    qDebug() << "Music Pic URLs:" << musicPicUrlList;
+
+    //设置QTableWidget的样式
+    // 隐藏选中项的虚线框
+    ui->tableWidgetLocal->setStyleSheet(
+        "QTableWidget::item:selected {"
+        "background-color: lightgreen;" // 自定义选中背景色
+        "border: none;" // 移除边框
+        "}"
+        "QTableWidget::item:focus {"
+        "outline: none;" // 取消焦点样式
+        "}"
+    );
+    ui->tableWidgetLocal->setStyleSheet(
+        "QTableWidget::item:selected { background-color: lightblue; }" // 设置选中项的背景颜色
+    );
+    ui->tableWidgetLocal->setFrameShape(QFrame::NoFrame); //设置无边框
+    ui->tableWidgetLocal->setShowGrid(false); //设置不显示格子线
+    ui->tableWidgetLocal->setStyleSheet("selection-background-color:rgb(34, 170, 75);"); //设置选中行的背景色
+    ui->tableWidgetLocal->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头的背景色
+    //设置水平滚动条的样式
+    // ui->tableWidgetLocal->horizontalScrollBar()->setStyleSheet("QScrollBar{background:transparent; height:12px;}"
+    // "QScrollBar::handle{background:lightgray; border:2px solid transparent; border-radius:5px;}"
+    // "QScrollBar::handle:hover{background:gray;}"
+    // "QScrollBar::sub-line{background:transparent;}"
+    // "QScrollBar::add-line{background:transparent;}");
+    // //设置垂直滚动条的样式
+    // ui->tableWidgetLocal->verticalScrollBar()->setStyleSheet("QScrollBar{background:transparent; width: 12px;}"
+    // "QScrollBar::handle{background:lightgray; border:2px solid transparent; border-radius:5px;}"
+    // "QScrollBar::handle:hover{background:gray;}"
+    // "QScrollBar::sub-line{background:transparent;}"
+    // "QScrollBar::add-line{background:transparent;}");
+
+    //设置QTableWidget
+    QTableWidgetItem* headerItem = nullptr;
+    QStringList headerText;
+    headerText << "#" << "标题" << "歌手" << "时长";
+    ui->tableWidgetLocal->setColumnCount(headerText.count());
+
+    for (int i = 0; i < headerText.count(); i++)
+    {
+        headerItem = new QTableWidgetItem(headerText.at(i));
+        ui->tableWidgetLocal->setHorizontalHeaderItem(i, headerItem);
+    }
+
+    // 隐藏行序号
+    ui->tableWidgetLocal->verticalHeader()->setVisible(false);
+
+    // 设置 QTableWidget 的行数
+    int rowCount = musicNameList.size();
+    ui->tableWidgetLocal->setRowCount(rowCount);
+
+    // 填充 QTableWidget 的数据
+    for (int row = 0; row < rowCount; ++row)
+    {
+        // 填充 "#" 列
+        QTableWidgetItem* itemNumber = new QTableWidgetItem(QString::number(row + 1));
+        ui->tableWidgetLocal->setItem(row, 0, itemNumber);
+
+        // 填充 "标题" 列
+        QTableWidgetItem* itemTitle = new QTableWidgetItem(musicNameList.at(row));
+        ui->tableWidgetLocal->setItem(row, 1, itemTitle);
+
+        // 填充 "歌手" 列
+        QTableWidgetItem* itemAuthor = new QTableWidgetItem(musicAuthorList.at(row));
+        ui->tableWidgetLocal->setItem(row, 2, itemAuthor);
+
+        // 填充 "时长" 列
+        // 这里假设你有一个方法来获取音乐的时长，例如 getMusicDuration(musicUrlList.at(row))
+        // 这里我们暂时用一个占位符 "00:00" 来表示
+        QTableWidgetItem* itemDuration = new QTableWidgetItem("00:00");
+        ui->tableWidgetLocal->setItem(row, 3, itemDuration);
+    }
+
+    // 禁止编辑
+    ui->tableWidgetLocal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //设置选择一整行
+    ui->tableWidgetLocal->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    //设置QListWidget
     QListWidgetItem* item = nullptr;
 
     for (int i = 0; i < musicNameList.count(); i++)
@@ -181,6 +265,25 @@ void Widget::useMysql()
     player->setPlaylist(m_LocalPlaylist);
     m_LocalPlaylist->setCurrentIndex(index);
     setBottomByIndex(index);
+}
+
+void Widget::switchPage()
+{
+    connect(ui->pushButton_pageSearch, &QPushButton::clicked, this, [ = ]()
+    {
+        ui->stackedWidget->setCurrentIndex(0);
+    });
+
+    connect(ui->pushButton_pageLocal, &QPushButton::clicked, this, [ = ]()
+    {
+        ui->stackedWidget->setCurrentIndex(1);
+    });
+
+    connect(ui->pushButton_pageRecommend, &QPushButton::clicked, this, [ = ]()
+    {
+        ui->stackedWidget->setCurrentIndex(2);
+    });
+
 }
 
 void Widget::setBottomByIndex(int index)
@@ -235,7 +338,9 @@ void Widget::readHttpReply()
     QString url = QString("http://music.163.com/song/media/outer/url?id=") + songID + ".mp3";
     qDebug() << "songID为：" << songID;
     qDebug() << url;
-    player->setMedia(QMediaContent(QUrl(url))); // 替换为实际的在线音乐URL
+    m_NetworkPlaylist->addMedia(QMediaContent(QUrl(url)));
+    m_NetworkPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+    player->setPlaylist(m_NetworkPlaylist); // 替换为实际的在线音乐URL
 }
 
 //关闭窗口
@@ -280,17 +385,17 @@ void Widget::on_pushButton_play_clicked()
     {
         case QMediaPlayer::StoppedState:
             player->play();
-            ui->pushButton_play->setIcon(QIcon(":/res/pause-circle-fill.png"));
+            ui->pushButton_play->setIcon(QIcon(":/res/img/pause-circle-fill.png"));
             break;
 
         case QMediaPlayer::PlayingState:
             player->pause();
-            ui->pushButton_play->setIcon(QIcon(":/res/play-circle-fill.png"));
+            ui->pushButton_play->setIcon(QIcon(":/res/img/play-circle-fill.png"));
             break;
 
         case QMediaPlayer::PausedState:
             player->play();
-            ui->pushButton_play->setIcon(QIcon(":/res/pause-circle-fill.png"));
+            ui->pushButton_play->setIcon(QIcon(":/res/img/pause-circle-fill.png"));
             break;
 
     }

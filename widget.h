@@ -14,6 +14,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QListWidgetItem>
+#include <QTableWidgetItem>
 
 #include "usemysql.h"
 
@@ -82,6 +83,7 @@ private:
     void setBottomByIndex(int index);
     void parseSongsJsonData(QByteArray rawData);
     void useMysql();//mysql
+    void switchPage();
 };
 
 #endif // WIDGET_H

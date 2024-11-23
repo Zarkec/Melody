@@ -17,5 +17,7 @@
         <file>res/img/skip-back-fill.png</file>
         <file>res/img/skip-forward-fill.png</file>
         <file>res/img/volume-up-line.png</file>
+        <file>res/img/good.png</file>
+        <file>res/img/good1.png</file>
     </qresource>
 </RCC>

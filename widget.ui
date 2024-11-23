@@ -100,9 +100,9 @@ border-radius: 10px</string>
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton{image: url(:/res/close0.png);}
-QPushButton:hover {image: url(:/res/close1.png);}
-QPushButton:pressed {image: url(:/res/close0.png);}</string>
+            <string notr="true">QPushButton{image: url(:/res/img/close0.png);}
+QPushButton:hover {image: url(:/res/img/close1.png);}
+QPushButton:pressed {image: url(:/res/img/close0.png);}</string>
            </property>
            <property name="text">
             <string/>
@@ -125,32 +125,37 @@ QPushButton:pressed {image: url(:/res/close0.png);}</string>
              <string notr="true">background-color: rgb(33, 33, 33);
 border-radius: 10px</string>
             </property>
-            <widget class="QWidget" name="widget_6" native="true">
-             <property name="geometry">
-              <rect>
-               <x>20</x>
-               <y>10</y>
-               <width>301</width>
-               <height>51</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(42, 42, 42);
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QStackedWidget" name="stackedWidget">
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="searchpage">
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="0" column="0">
+                  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,9">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <item>
+                      <widget class="QWidget" name="widget_6" native="true">
+                       <property name="styleSheet">
+                        <string notr="true">background-color: rgb(42, 42, 42);
 border-radius: 25px;</string>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
-              <property name="leftMargin">
-               <number>16</number>
-              </property>
-              <property name="rightMargin">
-               <number>16</number>
-              </property>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QLineEdit" name="lineEditSearch">
-                  <property name="styleSheet">
-                   <string notr="true">QLineEdit {
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_8">
+                        <property name="leftMargin">
+                         <number>16</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>16</number>
+                        </property>
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout_7">
+                          <item>
+                           <widget class="QLineEdit" name="lineEditSearch">
+                            <property name="styleSheet">
+                             <string notr="true">QLineEdit {
 	border: 2px solid #A0A0A0; /* 边框宽度为1px，颜色为#A0A0A0 */
 	border-radius: 10px; /* 边框圆角 */
 	padding-left: 5px; /* 文本距离左边界有5px */
@@ -160,79 +165,104 @@ border-radius: 25px;</string>
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
 	font-size: 10pt; /* 文本字体大小 */
 }</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="pushButton_search">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="res.qrc">
-                    <normaloff>:/res/search.png</normaloff>:/res/search.png</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="widget_7" native="true">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>70</y>
-               <width>911</width>
-               <height>481</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(42, 42, 42);
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="pushButton_search">
+                            <property name="minimumSize">
+                             <size>
+                              <width>25</width>
+                              <height>25</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>25</width>
+                              <height>25</height>
+                             </size>
+                            </property>
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
+                            <property name="text">
+                             <string/>
+                            </property>
+                            <property name="icon">
+                             <iconset resource="res.qrc">
+                              <normaloff>:/res/img/search.png</normaloff>:/res/img/search.png</iconset>
+                            </property>
+                            <property name="iconSize">
+                             <size>
+                              <width>25</width>
+                              <height>25</height>
+                             </size>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_8">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Fixed</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>600</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QWidget" name="widget_7" native="true">
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(42, 42, 42);
 color: rgb(255, 255, 255);</string>
-             </property>
-             <widget class="QTableWidget" name="tableWidgetLocal">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>851</width>
-                <height>161</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QListWidget" name="listWidgetLocal">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>230</y>
-                <width>661</width>
-                <height>192</height>
-               </rect>
-              </property>
-             </widget>
-            </widget>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="localpage">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QWidget" name="widget_8" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(42, 42, 42);
+color: rgb(255, 255, 255);</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_5">
+                    <item row="0" column="0">
+                     <layout class="QVBoxLayout" name="verticalLayout_6">
+                      <item>
+                       <widget class="QTableWidget" name="tableWidgetLocal"/>
+                      </item>
+                      <item>
+                       <widget class="QListWidget" name="listWidgetLocal"/>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="recommendpage"/>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -292,7 +322,7 @@ color: rgb(255, 255, 255);</string>
                   <string notr="true">QSlider::groove:horizontal{border: 0px solid #ff0000;height:6px;}
 QSlider::sub-page:horizontal{background: #2F89FC;border-radius: 3px;}
 QSlider::add-page:horizontal{background: #4d4d4d;border-radius: 3px;}
-QSlider::handle:horizontal{image: url(:/res/circle-fill.png);width:17px;height:17px;margin-top:-6px;margin-bottom: -6px;}</string>
+QSlider::handle:horizontal{image: url(:/res/img/circle-fill.png);width:17px;height:17px;margin-top:-6px;margin-bottom: -6px;}</string>
                  </property>
                  <property name="minimum">
                   <number>1</number>
@@ -336,8 +366,7 @@ QSlider::handle:horizontal{image: url(:/res/circle-fill.png);width:17px;height:1
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(33, 33, 33);
-border-radius: 20px;
-font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
+border-radius: 20px;</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="leftMargin">
@@ -371,10 +400,10 @@ font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
              <item>
               <layout class="QGridLayout" name="gridLayout">
                <property name="horizontalSpacing">
-                <number>8</number>
+                <number>11</number>
                </property>
                <property name="verticalSpacing">
-                <number>0</number>
+                <number>3</number>
                </property>
                <item row="0" column="0" rowspan="2">
                 <widget class="QLabel" name="label_pic">
@@ -397,7 +426,7 @@ font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="res.qrc">:/res/nopage.png</pixmap>
+                  <pixmap resource="res.qrc">:/res/img/nopage.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -418,21 +447,40 @@ font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
                    <height>16777215</height>
                   </size>
                  </property>
+                 <property name="font">
+                  <font>
+                   <family>Yu Gothic UI</family>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="text">
                   <string>无歌曲</string>
                  </property>
+                 <property name="alignment">
+                  <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+                 </property>
                 </widget>
                </item>
                <item row="1" column="1">
                 <widget class="QLabel" name="label_anthor">
+                 <property name="font">
+                  <font>
+                   <family>Yu Gothic UI</family>
+                   <pointsize>8</pointsize>
+                  </font>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(174, 174, 174);</string>
                  </property>
                  <property name="text">
                   <string>歌手</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                  </property>
                 </widget>
                </item>
@@ -477,9 +525,9 @@ font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">QPushButton{image: url(:/res/heart1.png);}
-QPushButton:hover {image: url(:/res/heart.png);}
-QPushButton:pressed {image: url(:/res/heart-fill.png);}
+                  <string notr="true">QPushButton{image: url(:/res/img/heart1.png);}
+QPushButton:hover {image: url(:/res/img/heart.png);}
+QPushButton:pressed {image: url(:/res/img/heart-fill.png);}
 
 </string>
                  </property>
@@ -519,7 +567,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">image: url(:/res/skip-back-fill.png);</string>
+                  <string notr="true">image: url(:/res/img/skip-back-fill.png);</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -560,7 +608,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                  </property>
                  <property name="icon">
                   <iconset resource="res.qrc">
-                   <normaloff>:/res/play-circle-fill.png</normaloff>:/res/play-circle-fill.png</iconset>
+                   <normaloff>:/res/img/play-circle-fill.png</normaloff>:/res/img/play-circle-fill.png</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -588,7 +636,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">image: url(:/res/skip-forward-fill.png);</string>
+                  <string notr="true">image: url(:/res/img/skip-forward-fill.png);</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -626,7 +674,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">image: url(:/res/repeat-fill.png);</string>
+                  <string notr="true">image: url(:/res/img/repeat-fill.png);</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -669,7 +717,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">image: url(:/res/volume-up-line.png);</string>
+                <string notr="true">image: url(:/res/img/volume-up-line.png);</string>
                </property>
                <property name="text">
                 <string/>
@@ -685,7 +733,7 @@ QPushButton:pressed {image: url(:/res/heart-fill.png);}
                 <string notr="true">QSlider::groove:horizontal{border: 0px solid #ff0000;height:6px;}
 QSlider::sub-page:horizontal{background: #ffffff;border-radius: 3px;}
 QSlider::add-page:horizontal{background: #4d4d4d;border-radius: 3px;}
-QSlider::handle:horizontal{image: url(:/res/circle-fill.png);width:17px;height:17px;margin-top:-6px;margin-bottom: -6px;}</string>
+QSlider::handle:horizontal{image: url(:/res/img/circle-fill.png);width:17px;height:17px;margin-top:-6px;margin-bottom: -6px;}</string>
                </property>
                <property name="singleStep">
                 <number>10</number>
@@ -734,8 +782,117 @@ QSlider::handle:horizontal{image: url(:/res/circle-fill.png);width:17px;height:1
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(33, 33, 33);
-border-radius: 10px</string>
+color: rgb(219, 219, 219);
+border-radius: 10px;
+</string>
             </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="0" column="0">
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <property name="spacing">
+                <number>25</number>
+               </property>
+               <property name="leftMargin">
+                <number>20</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pushButton_pageLocal">
+                 <property name="font">
+                  <font>
+                   <family>微软雅黑</family>
+                   <pointsize>13</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton{text-align : left;}</string>
+                 </property>
+                 <property name="text">
+                  <string>  音乐库</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="res.qrc">
+                   <normaloff>:/res/img/ku.png</normaloff>:/res/img/ku.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_pageSearch">
+                 <property name="font">
+                  <font>
+                   <family>微软雅黑</family>
+                   <pointsize>13</pointsize>
+                   <weight>75</weight>
+                   <italic>false</italic>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton{text-align : left;}</string>
+                 </property>
+                 <property name="text">
+                  <string>  搜索</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="res.qrc">
+                   <normaloff>:/res/img/search.png</normaloff>:/res/img/search.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_pageRecommend">
+                 <property name="font">
+                  <font>
+                   <family>微软雅黑</family>
+                   <pointsize>13</pointsize>
+                   <weight>75</weight>
+                   <italic>false</italic>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton{text-align : left;}</string>
+                 </property>
+                 <property name="text">
+                  <string>  定制推荐</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="res.qrc">
+                   <normaloff>:/res/img/good.png</normaloff>:/res/img/good.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
