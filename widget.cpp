@@ -173,89 +173,32 @@ void Widget::useMysql()
     qDebug() << "Music Authors:" << musicAuthorList;
     qDebug() << "Music Pic URLs:" << musicPicUrlList;
 
-    //设置QTableWidget的样式
-    // 隐藏选中项的虚线框
-    ui->tableWidgetLocal->setStyleSheet(
-        "QTableWidget::item:selected {"
-        "background-color: lightgreen;" // 自定义选中背景色
-        "border: none;" // 移除边框
-        "}"
-        "QTableWidget::item:focus {"
-        "outline: none;" // 取消焦点样式
-        "}"
-    );
-    ui->tableWidgetLocal->setStyleSheet(
-        "QTableWidget::item:selected { background-color: lightblue; }" // 设置选中项的背景颜色
-    );
-    ui->tableWidgetLocal->setFrameShape(QFrame::NoFrame); //设置无边框
-    ui->tableWidgetLocal->setShowGrid(false); //设置不显示格子线
-    ui->tableWidgetLocal->setStyleSheet("selection-background-color:rgb(34, 170, 75);"); //设置选中行的背景色
-    ui->tableWidgetLocal->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头的背景色
-    //设置水平滚动条的样式
-    // ui->tableWidgetLocal->horizontalScrollBar()->setStyleSheet("QScrollBar{background:transparent; height:12px;}"
-    // "QScrollBar::handle{background:lightgray; border:2px solid transparent; border-radius:5px;}"
-    // "QScrollBar::handle:hover{background:gray;}"
-    // "QScrollBar::sub-line{background:transparent;}"
-    // "QScrollBar::add-line{background:transparent;}");
-    // //设置垂直滚动条的样式
-    // ui->tableWidgetLocal->verticalScrollBar()->setStyleSheet("QScrollBar{background:transparent; width: 12px;}"
-    // "QScrollBar::handle{background:lightgray; border:2px solid transparent; border-radius:5px;}"
-    // "QScrollBar::handle:hover{background:gray;}"
-    // "QScrollBar::sub-line{background:transparent;}"
-    // "QScrollBar::add-line{background:transparent;}");
-
-    //设置QTableWidget
-    QTableWidgetItem* headerItem = nullptr;
-    QStringList headerText;
-    headerText << "#" << "标题" << "歌手" << "时长";
-    ui->tableWidgetLocal->setColumnCount(headerText.count());
-
-    for (int i = 0; i < headerText.count(); i++)
-    {
-        headerItem = new QTableWidgetItem(headerText.at(i));
-        ui->tableWidgetLocal->setHorizontalHeaderItem(i, headerItem);
-    }
-
-    // 隐藏行序号
-    ui->tableWidgetLocal->verticalHeader()->setVisible(false);
-
-    // 设置 QTableWidget 的行数
-    int rowCount = musicNameList.size();
-    ui->tableWidgetLocal->setRowCount(rowCount);
-
-    // 填充 QTableWidget 的数据
-    for (int row = 0; row < rowCount; ++row)
-    {
-        // 填充 "#" 列
-        QTableWidgetItem* itemNumber = new QTableWidgetItem(QString::number(row + 1));
-        ui->tableWidgetLocal->setItem(row, 0, itemNumber);
-
-        // 填充 "标题" 列
-        QTableWidgetItem* itemTitle = new QTableWidgetItem(musicNameList.at(row));
-        ui->tableWidgetLocal->setItem(row, 1, itemTitle);
-
-        // 填充 "歌手" 列
-        QTableWidgetItem* itemAuthor = new QTableWidgetItem(musicAuthorList.at(row));
-        ui->tableWidgetLocal->setItem(row, 2, itemAuthor);
-
-        // 填充 "时长" 列
-        // 这里假设你有一个方法来获取音乐的时长，例如 getMusicDuration(musicUrlList.at(row))
-        // 这里我们暂时用一个占位符 "00:00" 来表示
-        QTableWidgetItem* itemDuration = new QTableWidgetItem("00:00");
-        ui->tableWidgetLocal->setItem(row, 3, itemDuration);
-    }
-
-    // 禁止编辑
-    ui->tableWidgetLocal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //设置选择一整行
-    ui->tableWidgetLocal->setSelectionBehavior(QAbstractItemView::SelectRows);
-
     //设置QListWidget
-    QListWidgetItem* item = nullptr;
+    //QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
 
-    for (int i = 0; i < musicNameList.count(); i++)
+    // for (int i = 0; i < musicNameList.count(); i++)
+    // {
+    // //item = new QListWidgetItem(musicNameList[i], ui->listWidgetLocal);
+    // m_LocalPlaylist->addMedia(QUrl(musicUrlList[i]));
+    // }
+    // ShowItem* showItem = new ShowItem();
+    // item->setSizeHint(showItem->sizeHint());
+    // ui->listWidgetLocal->addItem(item);
+    // ui->listWidgetLocal->setItemWidget(item, showItem);
+
+    QListWidgetItem* item = nullptr;
+    ShowItem* showItem = nullptr;
+
+    for (int i = 0; i < musicNameList.size(); i++ )
     {
-        item = new QListWidgetItem(musicNameList[i], ui->listWidgetLocal);
+        showItem = new ShowItem();
+        item = new QListWidgetItem(ui->listWidgetLocal);
+        item->setSizeHint(showItem->sizeHint());
+        showItem->setMusicName(musicNameList[i]);
+        showItem->setMusicAuthor(musicAuthorList[i]);
+        showItem->setMusicPic(musicPicUrlList[i]);
+        ui->listWidgetLocal->addItem(item);
+        ui->listWidgetLocal->setItemWidget(item, showItem);
         m_LocalPlaylist->addMedia(QUrl(musicUrlList[i]));
     }
 

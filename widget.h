@@ -17,6 +17,7 @@
 #include <QTableWidgetItem>
 
 #include "usemysql.h"
+#include "showitem.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

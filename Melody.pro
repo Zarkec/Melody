@@ -10,14 +10,17 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
+    showitem.cpp \
     usemysql.cpp \
     widget.cpp
 
 HEADERS += \
+    showitem.h \
     usemysql.h \
     widget.h
 
 FORMS += \
+    showitem.ui \
     widget.ui
 
 # Default rules for deployment.

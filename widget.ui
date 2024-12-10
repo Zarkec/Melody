@@ -123,13 +123,13 @@ QPushButton:pressed {image: url(:/res/img/close0.png);}</string>
            <widget class="QWidget" name="widget_3" native="true">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(33, 33, 33);
-border-radius: 10px</string>
+</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
               <widget class="QStackedWidget" name="stackedWidget">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="searchpage">
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -246,9 +246,6 @@ color: rgb(255, 255, 255);</string>
                    <layout class="QGridLayout" name="gridLayout_5">
                     <item row="0" column="0">
                      <layout class="QVBoxLayout" name="verticalLayout_6">
-                      <item>
-                       <widget class="QTableWidget" name="tableWidgetLocal"/>
-                      </item>
                       <item>
                        <widget class="QListWidget" name="listWidgetLocal"/>
                       </item>
