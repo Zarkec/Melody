@@ -13,6 +13,23 @@ ShowItem::~ShowItem()
     delete ui;
 }
 
+void ShowItem::initShowItem(Music& music)
+{
+    //设置id
+    ui->label_musicid->setText(QString ::number(music.id()));
+    //设置歌名
+    ui->label_musicname->setText(music.name());
+    //设置歌手
+    ui->label_author->setText(music.author());
+    //设置时长
+
+}
+
+void ShowItem::setMusicId(QString musicId)
+{
+    ui->label_musicid->setText(musicId);
+}
+
 void ShowItem::setMusicName(QString musicName)
 {
     ui->label_musicname->setText(musicName);

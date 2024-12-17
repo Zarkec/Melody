@@ -21,7 +21,7 @@ UseMySQL* UseMySQL::instance()
 void UseMySQL::getMusicInfos(QStringList& musicNameList, QStringList& musicUrlList, QStringList& musicAuthorList, QStringList& musicPicUrlList)
 {
     QSqlQueryModel sql;
-    sql.setQuery("SELECT * FROM music_infos;", datebase);
+    sql.setQuery("SELECT * FROM music;", datebase);
 
     int row = sql.rowCount();
 

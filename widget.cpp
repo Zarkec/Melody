@@ -194,6 +194,7 @@ void Widget::useMysql()
         showItem = new ShowItem();
         item = new QListWidgetItem(ui->listWidgetLocal);
         item->setSizeHint(showItem->sizeHint());
+        showItem->setMusicId(QString::number(i + 1));
         showItem->setMusicName(musicNameList[i]);
         showItem->setMusicAuthor(musicAuthorList[i]);
         showItem->setMusicPic(musicPicUrlList[i]);
@@ -360,8 +361,11 @@ void Widget::on_volumeSlider_valueChanged(int value)
 //设置搜索键按下
 void Widget::on_pushButton_search_clicked()
 {
-    QString songid = ui->lineEditSearch->text();
-    search(songid);
+    //QString songid = ui->lineEditSearch->text();
+    //search(songid);
+    QString search = ui->lineEditSearch->text();
+    UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
+    usenetwork->searchOnline(search);
 }
 
 //上一曲

@@ -18,6 +18,7 @@
 
 #include "usemysql.h"
 #include "showitem.h"
+#include "usenetwork.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
