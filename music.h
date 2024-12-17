@@ -3,21 +3,14 @@
 
 #include <QObject>
 
-class Music : public QObject
+class Music
 {
-    Q_OBJECT
-    Q_PROPERTY(int id READ id WRITE setId)
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString author READ author WRITE setAuthor)
-    Q_PROPERTY(QString album READ album WRITE setAlbum)
-    Q_PROPERTY(QString url READ url WRITE setUrl)
-    Q_PROPERTY(QString picurl READ picurl WRITE setPicurl)
-    Q_PROPERTY(int duration READ duration WRITE setDuration)
 public:
-    explicit Music(QObject* parent = nullptr);
+    Music():
+        m_id(0), m_name(""), m_author(""), m_album(""), m_url(""), m_picurl(""), m_duration(0) {}
 
     // Getter methods
-    int id() const
+    qint64 id() const
     {
         return m_id;
     }
@@ -53,7 +46,7 @@ public:
     }
 
     // Setter methods
-    void setId(int id)
+    void setId(qint64 id)
     {
         m_id = id;
     }
@@ -88,10 +81,8 @@ public:
         m_duration = duration;
     }
 
-signals:
-
 private:
-    int m_id;
+    qint64 m_id;
     QString m_name;
     QString m_author;
     QString m_album;

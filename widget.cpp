@@ -230,6 +230,49 @@ void Widget::switchPage()
 
 }
 
+void Widget::updateListWidget(const QList<Music>& musicList)
+{
+    ui->listWidget_onlineSearch->clear(); // 清空列表
+    // 输出解析结果
+    qDebug() << "Parsed Music List:";
+
+    for (const Music& music : musicList)
+    {
+        qDebug() << "ID:" << music.id();
+        qDebug() << "Name:" << music.name();
+        qDebug() << "Author:" << music.author();
+        qDebug() << "Album:" << music.album();
+        qDebug() << "URL:" << music.url();
+        qDebug() << "Pic URL:" << music.picurl();
+        qDebug() << "Duration:" << music.duration();
+        qDebug() << "-----------------------------";
+    }
+
+    for (const Music& music : musicList)
+    {
+        ShowItem* showItem = new ShowItem();
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlineSearch);
+
+        // 设置 QListWidgetItem 的大小
+        item->setSizeHint(showItem->sizeHint());
+
+        showItem->initShowItem(music);
+
+        // 设置 ShowItem 的内容
+        // showItem->setMusicId(QString::number(music.id()));
+        // showItem->setMusicName(music.name());
+        // showItem->setMusicAuthor(music.author());
+        // showItem->setMusicPic(music.picurl());
+
+        // 将 ShowItem 添加到 QListWidget
+        ui->listWidget_onlineSearch->addItem(item);
+        ui->listWidget_onlineSearch->setItemWidget(item, showItem);
+
+        // 将音乐 URL 添加到播放列表
+        m_NetworkPlaylist->addMedia(QUrl(music.url()));
+    }
+}
+
 void Widget::setBottomByIndex(int index)
 {
     musicName = musicNameList[index];
@@ -365,7 +408,11 @@ void Widget::on_pushButton_search_clicked()
     //search(songid);
     QString search = ui->lineEditSearch->text();
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
+    // 连接信号和槽
+    connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
+
     usenetwork->searchOnline(search);
+
 }
 
 //上一曲

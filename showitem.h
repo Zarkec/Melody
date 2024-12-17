@@ -21,7 +21,7 @@ class ShowItem : public QWidget
 public:
     explicit ShowItem(QWidget* parent = nullptr);
     ~ShowItem();
-    void initShowItem(Music& music);
+    void initShowItem(const Music& music);
     void setMusicId(QString musicId);
     void setMusicName(QString musicName);
     void setMusicAuthor(QString musicAuthor);

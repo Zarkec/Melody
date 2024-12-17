@@ -10,7 +10,6 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    music.cpp \
     showitem.cpp \
     usemysql.cpp \
     usenetwork.cpp \

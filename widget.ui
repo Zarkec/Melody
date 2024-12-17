@@ -129,7 +129,7 @@ QPushButton:pressed {image: url(:/res/img/close0.png);}</string>
              <item row="0" column="0">
               <widget class="QStackedWidget" name="stackedWidget">
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="searchpage">
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -229,6 +229,11 @@ border-radius: 25px;</string>
                       <string notr="true">background-color: rgb(42, 42, 42);
 color: rgb(255, 255, 255);</string>
                      </property>
+                     <layout class="QGridLayout" name="gridLayout_7">
+                      <item row="0" column="0">
+                       <widget class="QListWidget" name="listWidget_onlineSearch"/>
+                      </item>
+                     </layout>
                     </widget>
                    </item>
                   </layout>

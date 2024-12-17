@@ -86,6 +86,7 @@ private:
     void parseSongsJsonData(QByteArray rawData);
     void useMysql();//mysql
     void switchPage();
+    void updateListWidget(const QList<Music>& musicList);
 };
 
 #endif // WIDGET_H

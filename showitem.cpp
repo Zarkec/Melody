@@ -13,7 +13,7 @@ ShowItem::~ShowItem()
     delete ui;
 }
 
-void ShowItem::initShowItem(Music& music)
+void ShowItem::initShowItem(const Music& music)
 {
     //设置id
     ui->label_musicid->setText(QString ::number(music.id()));
@@ -22,7 +22,7 @@ void ShowItem::initShowItem(Music& music)
     //设置歌手
     ui->label_author->setText(music.author());
     //设置时长
-
+    ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
 }
 
 void ShowItem::setMusicId(QString musicId)
