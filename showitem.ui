@@ -13,18 +13,56 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(33, 33, 33);
+background-color: transparent;
+color: rgb(255, 255, 255);
+</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_musicid">
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Microsoft YaHei UI</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(174, 174, 174);</string>
+       </property>
        <property name="text">
         <string>1</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="horizontalSpacing">
+        <number>8</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>1</number>
+       </property>
        <item row="0" column="0" rowspan="2">
         <widget class="QLabel" name="label_pic">
          <property name="minimumSize">
@@ -52,10 +90,28 @@
        </item>
        <item row="0" column="1">
         <widget class="QLabel" name="label_musicname">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei UI</family>
+           <pointsize>11</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>TextLabel</string>
@@ -64,6 +120,27 @@
        </item>
        <item row="1" column="1">
         <widget class="QLabel" name="label_author">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Microsoft YaHei UI</family>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(174, 174, 174);
+</string>
+         </property>
          <property name="text">
           <string>TextLabel</string>
          </property>
@@ -86,6 +163,14 @@
      </item>
      <item>
       <widget class="QLabel" name="label_album">
+       <property name="font">
+        <font>
+         <family>Microsoft YaHei UI</family>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(174, 174, 174);</string>
+       </property>
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -106,6 +191,14 @@
      </item>
      <item>
       <widget class="QLabel" name="label_addtime">
+       <property name="font">
+        <font>
+         <family>Microsoft YaHei UI</family>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(174, 174, 174);</string>
+       </property>
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -126,6 +219,14 @@
      </item>
      <item>
       <widget class="QLabel" name="label_duration">
+       <property name="font">
+        <font>
+         <family>Microsoft YaHei UI</family>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(174, 174, 174);</string>
+       </property>
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -135,6 +236,9 @@
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

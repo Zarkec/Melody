@@ -7,12 +7,17 @@ class Music
 {
 public:
     Music():
-        m_id(0), m_name(""), m_author(""), m_album(""), m_url(""), m_picurl(""), m_duration(0) {}
+        m_id(0), m_musicId(0), m_name(""), m_author(""), m_album(""), m_url(""), m_picurl(""), m_duration(0) {}
 
     // Getter methods
-    qint64 id() const
+    int id()const
     {
         return m_id;
+    }
+
+    qint64 musicId() const
+    {
+        return m_musicId;
     }
 
     QString name() const
@@ -46,9 +51,14 @@ public:
     }
 
     // Setter methods
-    void setId(qint64 id)
+    void setId(int id)
     {
         m_id = id;
+    }
+
+    void setMusicId(qint64 musicId)
+    {
+        m_musicId = musicId;
     }
 
     void setName(const QString& name)
@@ -82,7 +92,8 @@ public:
     }
 
 private:
-    qint64 m_id;
+    int m_id;
+    qint64 m_musicId;
     QString m_name;
     QString m_author;
     QString m_album;

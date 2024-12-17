@@ -230,6 +230,7 @@ void Widget::switchPage()
 
 }
 
+//更新搜索的item
 void Widget::updateListWidget(const QList<Music>& musicList)
 {
     ui->listWidget_onlineSearch->clear(); // 清空列表
@@ -239,6 +240,7 @@ void Widget::updateListWidget(const QList<Music>& musicList)
     for (const Music& music : musicList)
     {
         qDebug() << "ID:" << music.id();
+        qDebug() << "Music ID:" << music.musicId();
         qDebug() << "Name:" << music.name();
         qDebug() << "Author:" << music.author();
         qDebug() << "Album:" << music.album();
@@ -256,7 +258,7 @@ void Widget::updateListWidget(const QList<Music>& musicList)
         // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
 
-        showItem->initShowItem(music);
+        showItem->initNetworkShowItem(music);
 
         // 设置 ShowItem 的内容
         // showItem->setMusicId(QString::number(music.id()));
@@ -410,7 +412,6 @@ void Widget::on_pushButton_search_clicked()
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
     connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
-
     usenetwork->searchOnline(search);
 
 }

@@ -13,7 +13,7 @@ ShowItem::~ShowItem()
     delete ui;
 }
 
-void ShowItem::initShowItem(const Music& music)
+void ShowItem::initNetworkShowItem(const Music& music)
 {
     //设置id
     ui->label_musicid->setText(QString ::number(music.id()));
@@ -21,8 +21,13 @@ void ShowItem::initShowItem(const Music& music)
     ui->label_musicname->setText(music.name());
     //设置歌手
     ui->label_author->setText(music.author());
+    //设置专辑
+    ui->label_album->setText(music.album());
+    //设置添加时间不显示
+    ui->label_addtime->setVisible(false);
     //设置时长
     ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
+    setMusicPic(music.picurl());
 }
 
 void ShowItem::setMusicId(QString musicId)

@@ -1,212 +1,194 @@
 #include "usenetwork.h"
+#include <QDebug>
 
 UseNetwork::UseNetwork(QObject* parent)
-    : QObject(parent), manager(nullptr), reply(nullptr)
+    : QObject(parent), manager(new QNetworkAccessManager(this)), pendingRequests_(0)
 {
-
 }
 
 UseNetwork::~UseNetwork()
-{
-
-}
-
-void UseNetwork::searchOnline(const QString& search)
 {
     if (manager)
     {
         manager->deleteLater();
     }
 
-    manager = new QNetworkAccessManager(this);
-    QUrl url("http://music.163.com/api/search/get?s=" + search + "&type=1&offset=0&limit=20");
-    qDebug() << "URL:" << url;
-    QNetworkRequest res(url);
-    reply = manager->get(res);
-    //进行数据读取
-    connect(reply, &QNetworkReply::finished, this, &UseNetwork::readHttpReply);
-
+    // 确保所有回复都已删除
+    while (!musicList_.isEmpty())
+    {
+        musicList_.pop_back();
+    }
 }
 
-QList<Music> UseNetwork::parsePicUrl(QList<Music> musicList)
+void UseNetwork::searchOnline(const QString& search)
 {
-    Music music = musicList[0];
+    QUrl url("http://music.163.com/api/search/get");
+    QUrlQuery query;
+    query.addQueryItem("s", search);
+    query.addQueryItem("type", "1");
+    query.addQueryItem("offset", "0");
+    query.addQueryItem("limit", "20");
+    url.setQuery(query);
 
-    manager = new QNetworkAccessManager(this);
-    QUrl url("http://music.163.com/api/song/detail?ids=[" + QString::number(music.id()) + "]");
-    qDebug() << "URL:" << url;
-    QNetworkRequest res(url);
-    QNetworkReply* reply = manager->get(res);
-    //进行数据解析
-    connect(reply, &QNetworkReply::finished, this, [ & ]()
+    QNetworkRequest request(url);
+    QNetworkReply* reply = manager->get(request);
+    connect(reply, &QNetworkReply::finished, this, &UseNetwork::readSearchReply);
+}
+
+void UseNetwork::readSearchReply()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    if (!reply)
+    {
+        return;
+    }
+
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray rawData = reply->readAll();
+    musicList_ = parseSearchJsonData(rawData);
+
+    // 发起获取图片URL的请求
+    pendingRequests_ = musicList_.size();
+
+    for (Music& music : musicList_)
+    {
+        QUrl url(QString("http://music.163.com/api/song/detail?ids=[%1]").arg(music.musicId()));
+        QNetworkRequest request(url);
+        QNetworkReply* picReply = manager->get(request);
+        connect(picReply, &QNetworkReply::finished, this, [this, picReply, &music]()
+        {
+            readPicUrlReply(picReply, &music);
+        });
+    }
+
+    reply->deleteLater();
+}
+
+void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error getting pic URL:" << reply->errorString();
+    }
+    else
     {
         QByteArray data = reply->readAll();
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
 
-        if(!jsonDoc.isNull() && jsonDoc.isObject())
+        if (!jsonDoc.isNull() && jsonDoc.isObject())
         {
             QJsonObject jsonObj = jsonDoc.object();
 
-            if(jsonObj.contains("songs") && jsonObj["songs"].isArray())
+            if (jsonObj.contains("songs") && jsonObj["songs"].isArray())
             {
                 QJsonArray songsArray = jsonObj["songs"].toArray();
 
-                for(const QJsonValue& val : songsArray)
+                if (!songsArray.isEmpty())
                 {
-                    if(val.isObject())
+                    QJsonObject songObj = songsArray[0].toObject();
+
+                    if (songObj.contains("album") && songObj["album"].isObject())
                     {
-                        QJsonObject obj = val.toObject();
-
-                        if(obj.contains("album") && obj["album"].isObject())
-                        {
-                            QJsonObject album = obj["album"].toObject();
-                            music.setPicurl(album["blurPicUrl"].toString());
-                            break;
-                            qDebug() << "blurPicUrl" << album["blurPicUrl"].toString();
-                        }
-
+                        QJsonObject albumObj = songObj["album"].toObject();
+                        music->setPicurl(albumObj["blurPicUrl"].toString());
                     }
                 }
-
             }
         }
-        else
-        {
-            qDebug() << "Error parsing pic URL:" << reply->errorString();
-        }
+    }
 
-        reply->deleteLater();
-    });
+    reply->deleteLater();
+    pendingRequests_--;
 
-    return musicList;
-
+    if (pendingRequests_ == 0)
+    {
+        emit searchFinished(musicList_);
+    }
 }
 
 QList<Music> UseNetwork::parseSearchJsonData(QByteArray rawData)
 {
-    QList<Music> musicList; // 创建一个 Music 对象的列表
-
-    //将QByteArray 转换成QJsonDocument
+    QList<Music> musicList;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
 
-    if(jsonDoc.isNull() || !jsonDoc.isObject())
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
     {
-        qDebug() << "Failed to parse JSON data.";
-        return musicList; // 返回一个空的 Music 列表
-    }
+        QJsonObject jsonObj = jsonDoc.object();
 
-    //获取Json对象
-    QJsonObject jsonObj = jsonDoc.object();
-
-    //检查是否包含"result"字段
-    if(jsonObj.contains("result") && jsonObj["result"].isObject())
-    {
-        QJsonObject resultObj = jsonObj["result"].toObject();
-
-        //检查是否包含"songs"字段
-        if(resultObj.contains("songs") && resultObj["songs"].isArray())
+        if (jsonObj.contains("result") && jsonObj["result"].isObject())
         {
-            QJsonArray songsArray = resultObj["songs"].toArray();
+            QJsonObject resultObj = jsonObj["result"].toObject();
 
-            // 遍历所有歌曲
-            for (const QJsonValue& songValue : songsArray)
+            if (resultObj.contains("songs") && resultObj["songs"].isArray())
             {
-                if (!songValue.isObject())
+                QJsonArray songsArray = resultObj["songs"].toArray();
+
+                int counter = 1;
+
+                for (const QJsonValue& songValue : songsArray)
                 {
-                    continue; // 跳过非对象的元素
-                }
-
-                QJsonObject songObj = songValue.toObject();
-                Music music; // 创建一个 Music 对象
-
-                // 提取歌曲信息
-                if (songObj.contains("id") && songObj["id"].isDouble())
-                {
-                    //int id = songObj["id"].toInt();
-                    //解决int溢出问题
-                    qint64 id = songObj["id"].toVariant().toLongLong();
-                    music.setId(id);
-                    music.setUrl(QString("http://music.163.com/song/media/outer/url?id=") + QString::number(id) + ".mp3");
-                }
-
-                if (songObj.contains("name") && songObj["name"].isString())
-                {
-                    music.setName(songObj["name"].toString());
-                }
-
-                if (songObj.contains("duration") && songObj["duration"].isDouble())
-                {
-                    music.setDuration(songObj["duration"].toInt());
-                }
-
-                // 提取专辑信息
-                if (songObj.contains("album") && songObj["album"].isObject())
-                {
-                    QJsonObject albumObj = songObj["album"].toObject();
-
-                    if (albumObj.contains("name") && albumObj["name"].isString())
+                    if (songValue.isObject())
                     {
-                        music.setAlbum(albumObj["name"].toString());
-                    }
-                }
+                        QJsonObject songObj = songValue.toObject();
+                        Music music;
 
-                // 提取歌手信息
-                if (songObj.contains("artists") && songObj["artists"].isArray())
-                {
-                    QJsonArray artistsArray = songObj["artists"].toArray();
-
-                    if (!artistsArray.isEmpty())
-                    {
-                        QJsonObject artistObj = artistsArray[0].toObject();
-
-                        if (artistObj.contains("name") && artistObj["name"].isString())
+                        if (songObj.contains("id") && songObj["id"].isDouble())
                         {
-                            music.setAuthor(artistObj["name"].toString());
+                            qint64 MusicId = songObj["id"].toVariant().toLongLong();
+                            music.setMusicId(MusicId);
+                            music.setId(counter);
+                            counter++;
+                            music.setUrl(QString("http://music.163.com/song/media/outer/url?id=%1.mp3").arg(MusicId));
                         }
+
+                        if (songObj.contains("name") && songObj["name"].isString())
+                        {
+                            music.setName(songObj["name"].toString());
+                        }
+
+                        if (songObj.contains("duration") && songObj["duration"].isDouble())
+                        {
+                            music.setDuration(songObj["duration"].toInt());
+                        }
+
+                        if (songObj.contains("album") && songObj["album"].isObject())
+                        {
+                            QJsonObject albumObj = songObj["album"].toObject();
+
+                            if (albumObj.contains("name") && albumObj["name"].isString())
+                            {
+                                music.setAlbum(albumObj["name"].toString());
+                            }
+                        }
+
+                        if (songObj.contains("artists") && songObj["artists"].isArray())
+                        {
+                            QJsonArray artistsArray = songObj["artists"].toArray();
+
+                            if (!artistsArray.isEmpty())
+                            {
+                                QJsonObject artistObj = artistsArray[0].toObject();
+
+                                if (artistObj.contains("name") && artistObj["name"].isString())
+                                {
+                                    music.setAuthor(artistObj["name"].toString());
+                                }
+                            }
+                        }
+
+                        musicList.append(music);
                     }
                 }
-
-                // 将填充好的 Music 对象添加到列表中
-                musicList.append(music);
             }
         }
-
     }
 
     return musicList;
-}
-
-void UseNetwork::readHttpReply()
-{
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        QByteArray rawData = reply->readAll();
-        QList<Music> musicList = parseSearchJsonData(rawData); // 解析 JSON 数据
-        //QList<Music> musicListWithPicurl = parsePicUrl(musicList);
-
-        // 发出信号，传递解析后的数据
-        emit searchFinished(musicList);
-
-        // 输出解析结果
-        // qDebug() << "Parsed Music List:";
-
-        // for (const Music& music : musicList)
-        // {
-        // qDebug() << "ID:" << music.id();
-        // qDebug() << "Name:" << music.name();
-        // qDebug() << "Author:" << music.author();
-        // qDebug() << "Album:" << music.album();
-        // qDebug() << "URL:" << music.url();
-        // qDebug() << "Pic URL:" << music.picurl();
-        // qDebug() << "Duration:" << music.duration();
-        // qDebug() << "-----------------------------";
-        // }
-    }
-    else
-    {
-        qDebug() << "Error:" << reply->errorString();
-    }
-
-    reply->deleteLater(); // 释放 reply 对象
-    reply = nullptr;
 }

@@ -23,19 +23,23 @@ class UseNetwork : public QObject
 
 public:
     UseNetwork(QObject* parent = nullptr);
-    void searchOnline(const QString& search);
     QList<Music> parseSearchJsonData(QByteArray rawData);
-    QList<Music> parsePicUrl(QList<Music> musicList);
     ~UseNetwork();
+
+public slots:
+    void searchOnline(const QString& search);
 signals:
     void searchFinished(const QList<Music>& musicList); // 信号：搜索完成时发出
 
-public slots:
-    void readHttpReply();
+private slots:
+    void readSearchReply();
+    void readPicUrlReply(QNetworkReply* reply, Music* music);
 
 private:
     QNetworkAccessManager* manager;
     QNetworkReply* reply;
+    QList<Music> musicList_;
+    int pendingRequests_;
 };
 
 #endif // USENETWORK_H
