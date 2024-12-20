@@ -61,6 +61,8 @@ private slots:
     void on_pushButton_Prev_clicked(); //上一曲
     void on_pushButton_Next_clicked();//下一曲
 
+    void on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item);
+
 private:
     Ui::Widget* ui;
     QPoint mOffSet;//偏移值
@@ -87,6 +89,7 @@ private:
     void useMysql();//mysql
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
+    void changeOnlineUrl(const QString& onlineUrl);
 };
 
 #endif // WIDGET_H

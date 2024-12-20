@@ -15,6 +15,8 @@ ShowItem::~ShowItem()
 
 void ShowItem::initNetworkShowItem(const Music& music)
 {
+    //保存music类
+    m_music = music;
     //设置id
     ui->label_musicid->setText(QString ::number(music.id()));
     //设置歌名
@@ -93,4 +95,9 @@ void ShowItem::setImageFromUrl(const QString& url, QLabel* label)
     // 发起网络请求
     QNetworkRequest request(url);
     manager->get(request);
+}
+
+Music ShowItem::getMusic()
+{
+    return m_music;
 }

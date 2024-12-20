@@ -204,13 +204,14 @@ void Widget::useMysql()
     }
 
     //设置本地音乐列表窗体和本地音乐播放器列表默认选中下标为index
-    int index = 1;
+    int index = 0;
     m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(m_LocalPlaylist);
     m_LocalPlaylist->setCurrentIndex(index);
     setBottomByIndex(index);
 }
 
+//页面的切换
 void Widget::switchPage()
 {
     connect(ui->pushButton_pageSearch, &QPushButton::clicked, this, [ = ]()
@@ -260,12 +261,6 @@ void Widget::updateListWidget(const QList<Music>& musicList)
 
         showItem->initNetworkShowItem(music);
 
-        // 设置 ShowItem 的内容
-        // showItem->setMusicId(QString::number(music.id()));
-        // showItem->setMusicName(music.name());
-        // showItem->setMusicAuthor(music.author());
-        // showItem->setMusicPic(music.picurl());
-
         // 将 ShowItem 添加到 QListWidget
         ui->listWidget_onlineSearch->addItem(item);
         ui->listWidget_onlineSearch->setItemWidget(item, showItem);
@@ -273,6 +268,13 @@ void Widget::updateListWidget(const QList<Music>& musicList)
         // 将音乐 URL 添加到播放列表
         m_NetworkPlaylist->addMedia(QUrl(music.url()));
     }
+}
+
+void Widget::changeOnlineUrl(const QString& onlineUrl)
+{
+
+    qDebug() << "onlineurl:" << onlineUrl;
+    player->setMedia(QUrl(onlineUrl));
 }
 
 void Widget::setBottomByIndex(int index)
@@ -356,6 +358,8 @@ void Widget::do_durationChanged(qint64 duration)
     //设置播放进度条范围
     ui->timeSlider->setRange(0, duration);
 
+    //QMediaPlaylist* palylist = player->playlist();
+
 }
 
 void Widget::do_currentMediaChanged(const QMediaContent& media)
@@ -364,6 +368,7 @@ void Widget::do_currentMediaChanged(const QMediaContent& media)
     qDebug() << "Current media changed to:" << media.canonicalUrl().toString();
 
     // 停止当前播放的媒体
+    on_pushButton_play_clicked();
 }
 
 //播放按键的变化
@@ -409,6 +414,7 @@ void Widget::on_pushButton_search_clicked()
     //QString songid = ui->lineEditSearch->text();
     //search(songid);
     QString search = ui->lineEditSearch->text();
+    qDebug() << "search:" << search;
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
     connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
@@ -448,4 +454,23 @@ void Widget::on_pushButton_Next_clicked()
     tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
 
     setBottomByIndex(curIndex);
+}
+
+void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
+{
+    ShowItem* showItem = qobject_cast<ShowItem*>(ui->listWidget_onlineSearch->itemWidget(item));
+    Music music = showItem->getMusic();
+    UseNetwork* useNetwork = new UseNetwork(this);
+    useNetwork->parseOnlineUrl(music.musicId());
+    connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
+    initBottom(music.name(), music.author(), music.picurl());
+    // 输出 Music 对象的数据
+    qDebug() << "Music MusicID:" << music.musicId();
+    qDebug() << "Music Name:" << music.name();
+    qDebug() << "Music Author:" << music.author();
+    qDebug() << "Music Album:" << music.album();
+    qDebug() << "Music Pic:" << music.picurl();
+    qDebug() << "Music Duration:" << music.duration();
+    qDebug() << "-----------------------------";
+
 }

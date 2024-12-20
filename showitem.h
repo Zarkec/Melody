@@ -28,8 +28,11 @@ public:
     void setMusicPic(QString musicPicUrl);
     void setImageFromUrl(const QString& url, QLabel* label);
 
+    Music getMusic();
+
 private:
     Ui::ShowItem* ui;
+    Music m_music;
 };
 
 #endif // SHOWITEM_H

@@ -192,3 +192,36 @@ QList<Music> UseNetwork::parseSearchJsonData(QByteArray rawData)
 
     return musicList;
 }
+
+void UseNetwork::parseOnlineUrl(qint64 musicId)
+{
+    QUrl url("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(musicId));
+    QNetworkRequest request(url);
+    qDebug() << "onlineurl" << url;
+
+    QNetworkReply* reply = manager->get(request); // 这里定义 reply
+
+    // 连接 finished 信号以处理响应
+    connect(reply, &QNetworkReply::finished, [ = ]()
+    {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            // 读取响应数据
+            QByteArray responseData = reply->readAll();
+            qDebug() << "Response:" << responseData;
+            QString onlineUrl = QString::fromUtf8(responseData);
+            // 发送信号，传递在线 URL
+            emit onlineUrlReady(onlineUrl);
+        }
+        else
+        {
+            // 处理错误
+            qDebug() << "Error:" << reply->errorString();
+            // 发送信号，传递在线 URL
+            emit onlineUrlReady(" ");
+        }
+
+        // 释放资源
+        reply->deleteLater();
+    });
+}
