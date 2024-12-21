@@ -13,13 +13,8 @@ Widget::Widget(QWidget* parent)
     mbPressed = false;
 
     player = new QMediaPlayer(this);
-    playlist = new QMediaPlaylist(this);
     m_LocalPlaylist = new QMediaPlaylist(this);
     m_NetworkPlaylist = new QMediaPlaylist(this);
-
-    //未完成：可通过按键设置播放模式
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
-    player->setPlaylist(playlist);
 
     useMysql();
     initPlayer();
@@ -29,22 +24,6 @@ Widget::Widget(QWidget* parent)
 Widget::~Widget()
 {
     delete ui;
-}
-
-void Widget::search(QString id)
-{
-    QNetworkAccessManager* manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, []()
-    {
-        qDebug() << "manger finish!";
-    });
-
-    QUrl url("http://music.163.com/api/song/detail?ids=[" + id + "]");
-    qDebug() << url;
-    QNetworkRequest res(url);
-    reply = manager->get(res);
-    //网络请求后进行数据读取
-    connect(reply, &QNetworkReply::finished, this, &Widget::readHttpReply);
 }
 
 void Widget::initPlayer()
@@ -88,56 +67,6 @@ void Widget::mouseReleaseEvent(QMouseEvent*)
     mbPressed = false;
 }
 
-//解析json数据
-void Widget::parseSongsJsonData(QByteArray rawData)
-{
-    QJsonDocument jsonObj = QJsonDocument::fromJson(rawData);
-
-    if(!jsonObj.isNull() && jsonObj.isObject())
-    {
-        QJsonObject objRoot = jsonObj.object();
-
-        if(objRoot.contains("songs") && objRoot["songs"].isArray())
-        {
-            QJsonArray songsArray = objRoot["songs"].toArray();
-
-            for (QJsonValue val : songsArray)
-            {
-                if(val.isObject())
-                {
-                    QJsonObject obj = val.toObject();
-                    musicName = obj["name"].toString();
-                    //动态获取音乐名称
-                    //ui->label_musicname->setText(musicName);
-                    songID = QString::number( obj["id"].toVariant().toULongLong());
-
-                    if(obj.contains("album") && obj["album"].isObject())
-                    {
-                        QJsonObject album = obj["album"].toObject();
-                        musicPicUrl = album["blurPicUrl"].toString();
-                        //setImageFromUrl(musicPicUrl, ui->label_pic);
-                    }
-
-                    if(obj.contains("artists") && obj["artists"].isArray())
-                    {
-                        QJsonArray artistsArray = obj["artists"].toArray();
-
-                        for (QJsonValue val : artistsArray )
-                        {
-                            QJsonObject obj = val.toObject();
-                            musicAuthor = obj["name"].toString();
-                            //ui->label_anthor->setText(musicAuthor);
-                            qDebug() << obj["name"].toString();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    initBottom(musicName, musicAuthor, musicPicUrl);
-}
-
 //底部信息的更新
 void Widget::initBottom(QString musicName, QString musicAuthor, QString musicPicUrl)
 {
@@ -164,51 +93,47 @@ void Widget::initBottom(QString musicName, QString musicAuthor, QString musicPic
 //mysql
 void Widget::useMysql()
 {
-    UseMySQL::instance()->getMusicInfos(musicNameList, musicUrlList, musicAuthorList, musicPicUrlList);
-    qDebug() << musicNameList;
+    UseMySQL* useMySQL = new UseMySQL();
+    QList<Music> musicList = useMySQL->getMusicFromMysql();
 
-    // 检查数据是否正确读取
-    qDebug() << "Music Names:" << musicNameList;
-    qDebug() << "Music URLs:" << musicUrlList;
-    qDebug() << "Music Authors:" << musicAuthorList;
-    qDebug() << "Music Pic URLs:" << musicPicUrlList;
-
-    //设置QListWidget
-    //QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
-
-    // for (int i = 0; i < musicNameList.count(); i++)
-    // {
-    // //item = new QListWidgetItem(musicNameList[i], ui->listWidgetLocal);
-    // m_LocalPlaylist->addMedia(QUrl(musicUrlList[i]));
-    // }
-    // ShowItem* showItem = new ShowItem();
-    // item->setSizeHint(showItem->sizeHint());
-    // ui->listWidgetLocal->addItem(item);
-    // ui->listWidgetLocal->setItemWidget(item, showItem);
-
-    QListWidgetItem* item = nullptr;
-    ShowItem* showItem = nullptr;
-
-    for (int i = 0; i < musicNameList.size(); i++ )
+    for (const Music& music : musicList)
     {
-        showItem = new ShowItem();
-        item = new QListWidgetItem(ui->listWidgetLocal);
+        qDebug() << "ID:" << music.id();
+        qDebug() << "Music ID:" << music.musicId();
+        qDebug() << "Name:" << music.name();
+        qDebug() << "Author:" << music.author();
+        qDebug() << "Album:" << music.album();
+        qDebug() << "URL:" << music.url();
+        qDebug() << "Pic URL:" << music.picurl();
+        qDebug() << "Duration:" << music.duration();
+        qDebug() << "-----------------------------";
+    }
+
+    for (const Music& music : musicList)
+    {
+        ShowItem* showItem = new ShowItem();
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
+        // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
-        showItem->setMusicId(QString::number(i + 1));
-        showItem->setMusicName(musicNameList[i]);
-        showItem->setMusicAuthor(musicAuthorList[i]);
-        showItem->setMusicPic(musicPicUrlList[i]);
+
+        showItem->initNetworkShowItem(music);
+        // 将 ShowItem 添加到 QListWidget
         ui->listWidgetLocal->addItem(item);
         ui->listWidgetLocal->setItemWidget(item, showItem);
-        m_LocalPlaylist->addMedia(QUrl(musicUrlList[i]));
+
+        // 将音乐 URL 添加到播放列表
+        m_LocalPlaylist->addMedia(QUrl(music.url()));
+
     }
+
+    //保存到localMuisicList
+    m_localMusicList = musicList;
 
     //设置本地音乐列表窗体和本地音乐播放器列表默认选中下标为index
     int index = 0;
     m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(m_LocalPlaylist);
     m_LocalPlaylist->setCurrentIndex(index);
-    setBottomByIndex(index);
 }
 
 //页面的切换
@@ -265,6 +190,8 @@ void Widget::updateListWidget(const QList<Music>& musicList)
         ui->listWidget_onlineSearch->addItem(item);
         ui->listWidget_onlineSearch->setItemWidget(item, showItem);
 
+        m_networkMusicList = musicList;
+
         // 将音乐 URL 添加到播放列表
         m_NetworkPlaylist->addMedia(QUrl(music.url()));
     }
@@ -275,14 +202,6 @@ void Widget::changeOnlineUrl(const QString& onlineUrl)
 
     qDebug() << "onlineurl:" << onlineUrl;
     player->setMedia(QUrl(onlineUrl));
-}
-
-void Widget::setBottomByIndex(int index)
-{
-    musicName = musicNameList[index];
-    musicAuthor = musicAuthorList[index];
-    musicPicUrl = musicPicUrlList[index];
-    initBottom(musicName, musicAuthor, musicPicUrl);
 }
 
 void networkReplyFinished(QNetworkReply* reply, QLabel* label)
@@ -319,21 +238,6 @@ void Widget::setImageFromUrl(const QString& url, QLabel* label)
     manager->get(request);
 }
 
-void Widget::readHttpReply()
-{
-    QByteArray data = reply->readAll();
-    parseSongsJsonData(data);
-    qDebug() << songID;
-
-    //根据songID获取播放链接
-    QString url = QString("http://music.163.com/song/media/outer/url?id=") + songID + ".mp3";
-    qDebug() << "songID为：" << songID;
-    qDebug() << url;
-    m_NetworkPlaylist->addMedia(QMediaContent(QUrl(url)));
-    m_NetworkPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
-    player->setPlaylist(m_NetworkPlaylist); // 替换为实际的在线音乐URL
-}
-
 //关闭窗口
 void Widget::on_pushButton_close_clicked()
 {
@@ -358,7 +262,19 @@ void Widget::do_durationChanged(qint64 duration)
     //设置播放进度条范围
     ui->timeSlider->setRange(0, duration);
 
-    //QMediaPlaylist* palylist = player->playlist();
+    // QMediaPlaylist* playList = player->playlist();
+    // int currentIndex = playList->currentIndex();
+
+    // if(playList == m_LocalPlaylist)
+    // {
+    // Music tempMusic = m_localMusicList[currentIndex];
+    // initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
+    // }
+    // else if(playList == m_NetworkPlaylist)
+    // {
+    // // Music tempMusic = m_networkMusicList[currentIndex];
+    // // initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
+    // };
 
 }
 
@@ -367,7 +283,6 @@ void Widget::do_currentMediaChanged(const QMediaContent& media)
     // 在这里处理当前媒体内容的变化
     qDebug() << "Current media changed to:" << media.canonicalUrl().toString();
 
-    // 停止当前播放的媒体
     on_pushButton_play_clicked();
 }
 
@@ -417,9 +332,8 @@ void Widget::on_pushButton_search_clicked()
     qDebug() << "search:" << search;
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
-    connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
     usenetwork->searchOnline(search);
-
+    connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
 }
 
 //上一曲
@@ -435,8 +349,6 @@ void Widget::on_pushButton_Prev_clicked()
     };
 
     tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
-
-    setBottomByIndex(curIndex);
 }
 
 //下一曲
@@ -452,8 +364,6 @@ void Widget::on_pushButton_Next_clicked()
     };
 
     tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
-
-    setBottomByIndex(curIndex);
 }
 
 void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
@@ -463,6 +373,7 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
     UseNetwork* useNetwork = new UseNetwork(this);
     useNetwork->parseOnlineUrl(music.musicId());
     connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
+    player->setPlaylist(m_NetworkPlaylist);
     initBottom(music.name(), music.author(), music.picurl());
     // 输出 Music 对象的数据
     qDebug() << "Music MusicID:" << music.musicId();

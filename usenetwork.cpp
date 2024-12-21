@@ -2,7 +2,7 @@
 #include <QDebug>
 
 UseNetwork::UseNetwork(QObject* parent)
-    : QObject(parent), manager(new QNetworkAccessManager(this)), pendingRequests_(0)
+    : QObject(parent), manager(new QNetworkAccessManager(this)), m_pendingRequests(0)
 {
 }
 
@@ -14,9 +14,9 @@ UseNetwork::~UseNetwork()
     }
 
     // 确保所有回复都已删除
-    while (!musicList_.isEmpty())
+    while (!m_musicList.isEmpty())
     {
-        musicList_.pop_back();
+        m_musicList.pop_back();
     }
 }
 
@@ -27,7 +27,7 @@ void UseNetwork::searchOnline(const QString& search)
     query.addQueryItem("s", search);
     query.addQueryItem("type", "1");
     query.addQueryItem("offset", "0");
-    query.addQueryItem("limit", "20");
+    query.addQueryItem("limit", "60");
     url.setQuery(query);
 
     QNetworkRequest request(url);
@@ -52,12 +52,12 @@ void UseNetwork::readSearchReply()
     }
 
     QByteArray rawData = reply->readAll();
-    musicList_ = parseSearchJsonData(rawData);
+    m_musicList = parseSearchJsonData(rawData);
 
     // 发起获取图片URL的请求
-    pendingRequests_ = musicList_.size();
+    m_pendingRequests = m_musicList.size();
 
-    for (Music& music : musicList_)
+    for (Music& music : m_musicList)
     {
         QUrl url(QString("http://music.163.com/api/song/detail?ids=[%1]").arg(music.musicId()));
         QNetworkRequest request(url);
@@ -97,7 +97,9 @@ void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
                     if (songObj.contains("album") && songObj["album"].isObject())
                     {
                         QJsonObject albumObj = songObj["album"].toObject();
-                        music->setPicurl(albumObj["blurPicUrl"].toString());
+                        //qDebug() << "blurPicUrl" << albumObj["blurPicUrl"].toString() + "?param=300y300";
+                        //设置为小图300*300
+                        music->setPicurl(albumObj["blurPicUrl"].toString() + "?param=300y300");
                     }
                 }
             }
@@ -105,11 +107,11 @@ void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
     }
 
     reply->deleteLater();
-    pendingRequests_--;
+    m_pendingRequests--;
 
-    if (pendingRequests_ == 0)
+    if (m_pendingRequests == 0)
     {
-        emit searchFinished(musicList_);
+        emit searchFinished(m_musicList);
     }
 }
 
@@ -145,7 +147,7 @@ QList<Music> UseNetwork::parseSearchJsonData(QByteArray rawData)
                             music.setMusicId(MusicId);
                             music.setId(counter);
                             counter++;
-                            music.setUrl(QString("http://music.163.com/song/media/outer/url?id=%1.mp3").arg(MusicId));
+                            //music.setUrl(QString("http://music.163.com/song/media/outer/url?id=%1.mp3").arg(MusicId));
                         }
 
                         if (songObj.contains("name") && songObj["name"].isString())

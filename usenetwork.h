@@ -41,8 +41,8 @@ private slots:
 private:
     QNetworkAccessManager* manager;
     QNetworkReply* reply;
-    QList<Music> musicList_;
-    int pendingRequests_;
+    QList<Music> m_musicList;
+    int m_pendingRequests;
 };
 
 #endif // USENETWORK_H

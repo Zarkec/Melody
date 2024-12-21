@@ -42,10 +42,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent* e);
 
 public slots:
-    void readHttpReply();
     void setImageFromUrl(const QString& url, QLabel* label);
-    void search(QString id);
-
 private slots:
     //关闭窗口按键
     void on_pushButton_close_clicked();
@@ -68,7 +65,6 @@ private:
     QPoint mOffSet;//偏移值
     bool mbPressed;//鼠标按下标志（不分左右键）
     QMediaPlayer* player;
-    QMediaPlaylist* playlist;
     QMediaPlaylist* m_LocalPlaylist;
     QMediaPlaylist* m_NetworkPlaylist;
     QString* ctime;//当前时长
@@ -77,15 +73,11 @@ private:
     QString musicAuthor;//音乐作者
     QString musicPicUrl;//封面图片
     QString musicUrl;//音乐地址
-    QStringList musicNameList;
-    QStringList musicUrlList;
-    QStringList musicAuthorList;
-    QStringList musicPicUrlList;
+    QList<Music> m_localMusicList;
+    QList<Music> m_networkMusicList;
     QString songID;
     QNetworkReply* reply;
     void initBottom(QString musicName, QString musicAuthor, QString musicPicUrl);
-    void setBottomByIndex(int index);
-    void parseSongsJsonData(QByteArray rawData);
     void useMysql();//mysql
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
