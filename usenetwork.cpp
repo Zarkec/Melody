@@ -210,7 +210,7 @@ void UseNetwork::parseOnlineUrl(qint64 musicId)
         {
             // 读取响应数据
             QByteArray responseData = reply->readAll();
-            qDebug() << "Response:" << responseData;
+            //qDebug() << "Response:" << responseData;
             QString onlineUrl = QString::fromUtf8(responseData);
             // 发送信号，传递在线 URL
             emit onlineUrlReady(onlineUrl);

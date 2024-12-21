@@ -202,6 +202,7 @@ void Widget::changeOnlineUrl(const QString& onlineUrl)
 
     qDebug() << "onlineurl:" << onlineUrl;
     player->setMedia(QUrl(onlineUrl));
+
 }
 
 void networkReplyFinished(QNetworkReply* reply, QLabel* label)
@@ -262,14 +263,15 @@ void Widget::do_durationChanged(qint64 duration)
     //设置播放进度条范围
     ui->timeSlider->setRange(0, duration);
 
-    // QMediaPlaylist* playList = player->playlist();
-    // int currentIndex = playList->currentIndex();
+    QMediaPlaylist* playList = player->playlist();
 
-    // if(playList == m_LocalPlaylist)
-    // {
-    // Music tempMusic = m_localMusicList[currentIndex];
-    // initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
-    // }
+    if(playList == m_LocalPlaylist)
+    {
+        int currentIndex = playList->currentIndex();
+        Music tempMusic = m_localMusicList[currentIndex];
+        initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
+    };
+
     // else if(playList == m_NetworkPlaylist)
     // {
     // // Music tempMusic = m_networkMusicList[currentIndex];
@@ -283,7 +285,11 @@ void Widget::do_currentMediaChanged(const QMediaContent& media)
     // 在这里处理当前媒体内容的变化
     qDebug() << "Current media changed to:" << media.canonicalUrl().toString();
 
-    on_pushButton_play_clicked();
+    if(player->state() != QMediaPlayer::PlayingState)
+    {
+        qDebug() << "1.-----------------------";
+        on_pushButton_play_clicked();
+    }
 }
 
 //播放按键的变化
@@ -384,4 +390,13 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
     qDebug() << "Music Duration:" << music.duration();
     qDebug() << "-----------------------------";
 
+}
+
+void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
+{
+    ShowItem* showItem = qobject_cast<ShowItem*>(ui->listWidgetLocal->itemWidget(item));
+    Music music = showItem->getMusic();
+    player->setPlaylist(m_LocalPlaylist);
+    //设置音乐播放列表的当前下标 要记得减一
+    m_LocalPlaylist->setCurrentIndex(music.id() - 1);
 }

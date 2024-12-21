@@ -60,6 +60,8 @@ private slots:
 
     void on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item);
 
+    void on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item);
+
 private:
     Ui::Widget* ui;
     QPoint mOffSet;//偏移值
