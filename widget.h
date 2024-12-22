@@ -62,7 +62,10 @@ private slots:
 
     void on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item);
 
-public: signals:
+    void on_pushButton_bfmode_clicked();// 切换播放模式
+
+public:
+signals:
     void updateNetworkMusicListFinished();
 
 private:

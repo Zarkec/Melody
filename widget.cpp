@@ -215,6 +215,7 @@ void Widget::updateNetworkMusicList(const QList<Music>& musicList)
         m_NetworkPlaylist->addMedia(QUrl(music.url()));
     }
 
+    m_NetworkPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(m_NetworkPlaylist);
 
     emit updateNetworkMusicListFinished();
@@ -377,6 +378,8 @@ void Widget::on_pushButton_Prev_clicked()
     };
 
     tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
+
+    player->play();
 }
 
 //下一曲
@@ -392,6 +395,8 @@ void Widget::on_pushButton_Next_clicked()
     };
 
     tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
+
+    player->play();
 }
 
 void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
@@ -405,6 +410,7 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
 
     if (playList != m_NetworkPlaylist)
     {
+        player->stop();
         //useNetwork->parseOnlineUrl(music.musicId());
         useNetwork->parseOnlineUrlForList(m_networkMusicList);
         //connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
@@ -412,6 +418,7 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
         connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
         {
             m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+            player->play();
         });
     }
 
@@ -431,11 +438,13 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
             connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
             {
                 m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+                player->play();
             });
         }
         else
         {
             m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+            player->play();
         }
     }
 
@@ -459,4 +468,27 @@ void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
     player->setPlaylist(m_LocalPlaylist);
     //设置音乐播放列表的当前下标 要记得减一
     m_LocalPlaylist->setCurrentIndex(music.id() - 1);
+}
+
+// 切换播放模式
+void Widget::on_pushButton_bfmode_clicked()
+{
+    QMediaPlaylist* currentPlaylist = player->playlist(); // 获取当前播放列表
+    // 根据当前播放模式切换到下一个模式
+    if (currentPlaylist->playbackMode() == QMediaPlaylist::Loop)
+    {
+        currentPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        ui->pushButton_bfmode->setIcon(QIcon(":/res/img/loopone.png"));
+    }
+    else if (currentPlaylist->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
+    {
+        currentPlaylist->setPlaybackMode(QMediaPlaylist::Random);
+        ui->pushButton_bfmode->setIcon(QIcon(":/res/img/random.png"));
+    }
+    else if (currentPlaylist->playbackMode() == QMediaPlaylist::Random)
+    {
+        currentPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+        ui->pushButton_bfmode->setIcon(QIcon(":/res/img/loop.png"));
+    }
+	qDebug() << "Current playback mode:" << currentPlaylist->playbackMode();
 }
