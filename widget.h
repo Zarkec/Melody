@@ -62,6 +62,9 @@ private slots:
 
     void on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item);
 
+public: signals:
+    void updateNetworkMusicListFinished();
+
 private:
     Ui::Widget* ui;
     QPoint mOffSet;//偏移值

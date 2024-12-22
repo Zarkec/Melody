@@ -68,7 +68,7 @@ QList<Music> UseMySQL::getMusicFromMysql()
 
     if(row <= 0)
     {
-        qDebug() << "数据库没有记录";
+        qDebug() << "There is no record in the database";
         return QList<Music> {};
     }
 

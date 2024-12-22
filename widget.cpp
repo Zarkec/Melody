@@ -197,7 +197,6 @@ void Widget::updateListWidget(const QList<Music>& musicList)
 
 void Widget::updateNetworkMusicList(const QList<Music>& musicList)
 {
-    int currentMediaIndex = m_NetworkPlaylist->currentIndex(); // 保存当前播放位置
     m_networkMusicList = musicList;
     m_NetworkPlaylist->clear();
 
@@ -218,14 +217,7 @@ void Widget::updateNetworkMusicList(const QList<Music>& musicList)
 
     player->setPlaylist(m_NetworkPlaylist);
 
-    if (currentMediaIndex >= 0 && currentMediaIndex < m_NetworkPlaylist->mediaCount())
-    {
-        m_NetworkPlaylist->setCurrentIndex(currentMediaIndex); // 恢复播放位置
-    }
-    else
-    {
-        m_NetworkPlaylist->setCurrentIndex(0); // 设置为第一个媒体
-    }
+    emit updateNetworkMusicListFinished();
 
 }
 
@@ -417,6 +409,10 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
         useNetwork->parseOnlineUrlForList(m_networkMusicList);
         //connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
         connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
+        connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
+        {
+            m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+        });
     }
 
     //player->setPlaylist(m_NetworkPlaylist);
@@ -432,6 +428,10 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
             useNetwork->parseOnlineUrlForList(m_networkMusicList);
             //connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
             connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
+            connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
+            {
+                m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+            });
         }
         else
         {
