@@ -64,6 +64,8 @@ private slots:
 
     void on_pushButton_bfmode_clicked();// 切换播放模式
 
+    void on_pushButton_minimize_clicked();
+
 public:
 signals:
     void updateNetworkMusicListFinished();

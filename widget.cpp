@@ -10,6 +10,7 @@ Widget::Widget(QWidget* parent)
     setWindowIcon(QIcon(":/res/img/icon.png"));
     setAttribute(Qt::WA_TranslucentBackground);//背景透明
     setWindowFlags(Qt::FramelessWindowHint);//无边框
+
     mbPressed = false;
 
     player = new QMediaPlayer(this);
@@ -215,8 +216,10 @@ void Widget::updateNetworkMusicList(const QList<Music>& musicList)
         m_NetworkPlaylist->addMedia(QUrl(music.url()));
     }
 
-    m_NetworkPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+    // 先设置单曲循环模式，然后再切换到顺序播放模式
+    m_NetworkPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
     player->setPlaylist(m_NetworkPlaylist);
+    on_pushButton_bfmode_clicked();
 
     emit updateNetworkMusicListFinished();
 
@@ -268,6 +271,12 @@ void Widget::setImageFromUrl(const QString& url, QLabel* label)
 void Widget::on_pushButton_close_clicked()
 {
     close();
+}
+
+// 最小化窗口
+void Widget::on_pushButton_minimize_clicked()
+{
+    this->showMinimized();
 }
 
 void Widget::do_stateChanged(QMediaPlayer::State state)
@@ -369,15 +378,14 @@ void Widget::on_pushButton_search_clicked()
 void Widget::on_pushButton_Prev_clicked()
 {
     QMediaPlaylist* tmp = player->playlist(); //获取当前播放器的音乐列表
-    int curIndex = tmp->currentIndex(); //获取当前播放音乐的下标
-    curIndex--;
 
-    if (curIndex < 0)
+    // 如果是单曲循环模式，切换到顺序播放模式
+    if (tmp->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
     {
-        curIndex = tmp->mediaCount() - 1;
-    };
+        on_pushButton_bfmode_clicked();
+    }
 
-    tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
+    tmp->previous();
 
     player->play();
 }
@@ -386,15 +394,14 @@ void Widget::on_pushButton_Prev_clicked()
 void Widget::on_pushButton_Next_clicked()
 {
     QMediaPlaylist* tmp = player->playlist(); //获取当前播放器的音乐列表
-    int curIndex = tmp->currentIndex(); //获取当前播放音乐的下标
-    curIndex++;
 
-    if (curIndex >= tmp->mediaCount())
+    // 如果是单曲循环模式，切换到顺序播放模式
+    if (tmp->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
     {
-        curIndex = 0;
-    };
+        on_pushButton_bfmode_clicked();
+    }
 
-    tmp->setCurrentIndex(curIndex); //设置当前音乐播放器列表的下标
+    tmp->next();
 
     player->play();
 }
@@ -421,9 +428,6 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
             player->play();
         });
     }
-
-    //player->setPlaylist(m_NetworkPlaylist);
-    //m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
 
     if (playList == m_NetworkPlaylist)
     {
@@ -465,7 +469,15 @@ void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
 {
     ShowItem* showItem = qobject_cast<ShowItem*>(ui->listWidgetLocal->itemWidget(item));
     Music music = showItem->getMusic();
-    player->setPlaylist(m_LocalPlaylist);
+
+    if (player->playlist() == m_NetworkPlaylist)
+    {
+        // 先设置单曲循环模式，然后再切换到顺序播放模式
+        m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        player->setPlaylist(m_LocalPlaylist);
+        on_pushButton_bfmode_clicked();
+    }
+
     //设置音乐播放列表的当前下标 要记得减一
     m_LocalPlaylist->setCurrentIndex(music.id() - 1);
 }
@@ -474,21 +486,23 @@ void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
 void Widget::on_pushButton_bfmode_clicked()
 {
     QMediaPlaylist* currentPlaylist = player->playlist(); // 获取当前播放列表
+
     // 根据当前播放模式切换到下一个模式
     if (currentPlaylist->playbackMode() == QMediaPlaylist::Loop)
-    {
-        currentPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
-        ui->pushButton_bfmode->setIcon(QIcon(":/res/img/loopone.png"));
-    }
-    else if (currentPlaylist->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
     {
         currentPlaylist->setPlaybackMode(QMediaPlaylist::Random);
         ui->pushButton_bfmode->setIcon(QIcon(":/res/img/random.png"));
     }
     else if (currentPlaylist->playbackMode() == QMediaPlaylist::Random)
     {
+        currentPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        ui->pushButton_bfmode->setIcon(QIcon(":/res/img/loopone.png"));
+    }
+    else if (currentPlaylist->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
+    {
         currentPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
         ui->pushButton_bfmode->setIcon(QIcon(":/res/img/loop.png"));
     }
-	qDebug() << "Current playback mode:" << currentPlaylist->playbackMode();
+
+    qDebug() << "Current playback mode:" << currentPlaylist->playbackMode();
 }
