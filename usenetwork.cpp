@@ -27,7 +27,7 @@ void UseNetwork::searchOnline(const QString& search)
     query.addQueryItem("s", search);
     query.addQueryItem("type", "1");
     query.addQueryItem("offset", "0");
-    query.addQueryItem("limit", "60");
+    query.addQueryItem("limit", "20");
     url.setQuery(query);
 
     QNetworkRequest request(url);
@@ -226,4 +226,40 @@ void UseNetwork::parseOnlineUrl(qint64 musicId)
         // 释放资源
         reply->deleteLater();
     });
+}
+
+void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
+{
+    m_musicList = musicList;
+    // 发起获取在线URL的请求
+    m_pendingRequests = m_musicList.size();
+
+    for (Music& music : m_musicList)
+    {
+        // 发起获取在线URL的请求
+        QUrl onlineUrl("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(music.musicId()));
+        QNetworkRequest onlineRequest(onlineUrl);
+        QNetworkReply* onlineReply = manager->get(onlineRequest);
+        connect(onlineReply, &QNetworkReply::finished, this, [this, onlineReply, &music]()
+        {
+            if (onlineReply->error() != QNetworkReply::NoError)
+            {
+                qDebug() << "Error getting online URL:" << onlineReply->errorString();
+            }
+            else
+            {
+                QByteArray data = onlineReply->readAll();
+                QString onlineUrl = QString::fromUtf8(data);
+                music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
+            }
+
+            onlineReply->deleteLater();
+            m_pendingRequests--;
+
+            if (m_pendingRequests == 0)
+            {
+                emit onlineUrlForListReady(m_musicList);
+            }
+        });
+    }
 }

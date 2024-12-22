@@ -343,7 +343,7 @@ QSlider::handle:horizontal{image: url(:/res/img/circle-fill.png);width:17px;heig
                   <string notr="true">color: rgb(219, 219, 219);</string>
                  </property>
                  <property name="text">
-                  <string>02:59</string>
+                  <string>00:00</string>
                  </property>
                 </widget>
                </item>
