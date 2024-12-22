@@ -41,6 +41,9 @@ Thumbs.db
 /.vs
 *.qtvscr
 
+# IDEA
+/.idea
+
 # qtcreator generated files
 *.pro.user*
 
