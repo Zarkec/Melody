@@ -27,7 +27,7 @@ void UseNetwork::searchOnline(const QString& search)
     query.addQueryItem("s", search);
     query.addQueryItem("type", "1");
     query.addQueryItem("offset", "0");
-    query.addQueryItem("limit", "20");
+    query.addQueryItem("limit", "35");
     url.setQuery(query);
 
     QNetworkRequest request(url);

@@ -66,6 +66,8 @@ private slots:
 
     void on_pushButton_minimize_clicked();
 
+    void on_pushButton_add_clicked();// 添加本地音乐按钮
+
 public:
 signals:
     void updateNetworkMusicListFinished();

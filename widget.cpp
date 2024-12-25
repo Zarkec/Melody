@@ -506,3 +506,9 @@ void Widget::on_pushButton_bfmode_clicked()
 
     qDebug() << "Current playback mode:" << currentPlaylist->playbackMode();
 }
+
+// 添加本地音乐按钮
+void Widget::on_pushButton_add_clicked()
+{
+
+}

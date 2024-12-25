@@ -24,5 +24,7 @@
         <file>res/img/random.png</file>
         <file>res/img/minimized0.png</file>
         <file>res/img/minimized1.png</file>
+        <file>res/img/add0.png</file>
+        <file>res/img/add1.png</file>
     </qresource>
 </RCC>
