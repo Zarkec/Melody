@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <QSqlQueryModel>
 #include <QSqlRecord>
+#include <QSqlQuery>
 
 #include "music.h"
 
@@ -18,6 +19,7 @@ public:
 
     //void getMusicInfos(QStringList& musicNameList, QStringList& musicUrlList, QStringList& musicAuthorList, QStringList& musicPicUrlList); //获取音乐信息
     QList<Music> getMusicFromMysql();
+	void insertMusicToMysql(const Music& music); //插入音乐信息
 
 private:
     void connectMySQL(); //连接数据库

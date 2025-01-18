@@ -361,11 +361,21 @@ void Widget::on_volumeSlider_valueChanged(int value)
     player->setVolume(value);
 }
 
+//设置键盘监听事件
+void Widget::keyPressEvent(QKeyEvent* event)
+{
+    //检查是否按下了Enter键
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+	{
+		on_pushButton_search_clicked();
+	}
+	//调用父类的keyPressEvent函数 保证其他事件可以正常处理
+	QWidget::keyPressEvent(event);
+}
+
 //设置搜索键按下
 void Widget::on_pushButton_search_clicked()
 {
-    //QString songid = ui->lineEditSearch->text();
-    //search(songid);
     QString search = ui->lineEditSearch->text();
     qDebug() << "search:" << search;
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
@@ -510,5 +520,41 @@ void Widget::on_pushButton_bfmode_clicked()
 // 添加本地音乐按钮
 void Widget::on_pushButton_add_clicked()
 {
+	QString filePath = QFileDialog::getOpenFileName(this, tr("添加音乐文件"), " ", tr("音乐文件(*.mp3)"));
+	if (filePath.isEmpty())
+	{
+		return;
+	}
+	qDebug() << "filePath:" << filePath;
+
+	QFileInfo fileInfo(filePath);
+	QString fileName = fileInfo.fileName();
+	qDebug() << "fileName:" << fileName;    
+	Music music;
+	music.setName(fileName);
+	music.setUrl(filePath);
+	music.setAuthor("未知");
+	music.setAlbum("未知");
+	music.setDuration(0);
+	music.setPicurl(":/res/img/music.png");
+
+	ShowItem* showItem = new ShowItem();
+	QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
+	// 设置 QListWidgetItem 的大小
+	item->setSizeHint(showItem->sizeHint());
+
+	showItem->initNetworkShowItem(music);
+	// 将 ShowItem 添加到 QListWidget
+	ui->listWidgetLocal->addItem(item);
+	ui->listWidgetLocal->setItemWidget(item, showItem);
+
+	// 将音乐 URL 添加到播放列表
+	m_LocalPlaylist->addMedia(QUrl(music.url()));
+
+	UseMySQL* useMySQL = new UseMySQL();
+	useMySQL->insertMusicToMysql(music);
+
+	// 保存到本地音乐列表
+	m_localMusicList.append(music);
 
 }

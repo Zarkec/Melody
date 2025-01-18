@@ -15,6 +15,7 @@
 #include <QMediaPlaylist>
 #include <QListWidgetItem>
 #include <QTableWidgetItem>
+#include <QFileDialog>
 
 #include "usemysql.h"
 #include "showitem.h"
@@ -40,6 +41,7 @@ protected:
     void mousePressEvent(QMouseEvent* e);
     void mouseMoveEvent(QMouseEvent* e);
     void mouseReleaseEvent(QMouseEvent* e);
+    void keyPressEvent(QKeyEvent* event);
 
 public slots:
     void setImageFromUrl(const QString& url, QLabel* label);

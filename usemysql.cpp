@@ -91,6 +91,27 @@ QList<Music> UseMySQL::getMusicFromMysql()
     return musicList;
 }
 
+//插入音乐信息
+void UseMySQL::insertMusicToMysql(const Music& music)
+{
+	QSqlQuery query(datebase);
+	query.prepare("INSERT INTO music (music_name, music_url, music_author, music_picurl,album) VALUES (:music_name, :music_url, :music_author, :music_picurl ,:album);");
+	query.bindValue(":music_name", music.name());
+	query.bindValue(":music_url", music.url());
+	query.bindValue(":music_author", music.author());
+	query.bindValue(":music_picurl", music.picurl());
+	query.bindValue(":album", music.album());
+
+	if (query.exec())
+	{
+		qDebug() << "Insert succeed!";
+	}
+	else
+	{
+		qDebug() << "Insert failed!";
+	}
+}
+
 //连接数据库
 void UseMySQL::connectMySQL()
 {
