@@ -11,19 +11,24 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     showitem.cpp \
+    showtableitem.cpp \
     usemysql.cpp \
     usenetwork.cpp \
+    usesqlite.cpp \
     widget.cpp
 
 HEADERS += \
     music.h \
     showitem.h \
+    showtableitem.h \
     usemysql.h \
     usenetwork.h \
+    usesqlite.h \
     widget.h
 
 FORMS += \
     showitem.ui \
+    showtableitem.ui \
     widget.ui
 
 # Default rules for deployment.

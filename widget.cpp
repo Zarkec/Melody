@@ -110,6 +110,8 @@ void Widget::useMysql()
         qDebug() << "-----------------------------";
     }
 
+    ui->listWidgetLocal->clear(); // 清空列表
+
     for (const Music& music : musicList)
     {
         ShowItem* showItem = new ShowItem();
@@ -434,7 +436,8 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
         connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
         connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
         {
-            m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+			int index = ui->listWidget_onlineSearch->row(item);
+            m_NetworkPlaylist->setCurrentIndex(index);
             player->play();
         });
     }
@@ -488,8 +491,10 @@ void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
         on_pushButton_bfmode_clicked();
     }
 
-    //设置音乐播放列表的当前下标 要记得减一
-    m_LocalPlaylist->setCurrentIndex(music.id() - 1);
+	//得到item的index
+	int index = ui->listWidgetLocal->row(item);
+
+    m_LocalPlaylist->setCurrentIndex(index);
 }
 
 // 切换播放模式
@@ -538,23 +543,9 @@ void Widget::on_pushButton_add_clicked()
 	music.setDuration(0);
 	music.setPicurl(":/res/img/music.png");
 
-	ShowItem* showItem = new ShowItem();
-	QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
-	// 设置 QListWidgetItem 的大小
-	item->setSizeHint(showItem->sizeHint());
-
-	showItem->initNetworkShowItem(music);
-	// 将 ShowItem 添加到 QListWidget
-	ui->listWidgetLocal->addItem(item);
-	ui->listWidgetLocal->setItemWidget(item, showItem);
-
-	// 将音乐 URL 添加到播放列表
-	m_LocalPlaylist->addMedia(QUrl(music.url()));
-
 	UseMySQL* useMySQL = new UseMySQL();
 	useMySQL->insertMusicToMysql(music);
 
-	// 保存到本地音乐列表
-	m_localMusicList.append(music);
-
+	//刷新本地音乐列表
+    useMysql();
 }
