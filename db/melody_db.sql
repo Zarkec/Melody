@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost_3306
+ Source Server         : mysql
  Source Server Type    : MySQL
  Source Server Version : 80036
  Source Host           : localhost:3306
@@ -11,29 +11,30 @@
  Target Server Version : 80036
  File Encoding         : 65001
 
- Date: 22/11/2024 23:29:21
+ Date: 17/02/2025 15:03:31
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for music_infos
+-- Table structure for music
 -- ----------------------------
-DROP TABLE IF EXISTS `music_infos`;
-CREATE TABLE `music_infos`  (
+DROP TABLE IF EXISTS `music`;
+CREATE TABLE `music`  (
   `music_id` int NOT NULL AUTO_INCREMENT,
   `music_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `music_author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `music_picurl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `music_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `album` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`music_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of music_infos
+-- Records of music
 -- ----------------------------
-INSERT INTO `music_infos` VALUES (1, 'Don’t say “lazy”', '放課後ティータイム', 'D:/cppCode/last/Melody/res/music/Don\'t say lazy.jpg', 'D:/cppCode/last/Melody/res/music/Don\'t say lazy.mp3');
-INSERT INTO `music_infos` VALUES (2, 'ギターと孤独と蒼い惑星', '結束バンド', 'D:/cppCode/last/Melody/res/music/ギターと孤独と蒼い惑星.jpg', 'D:/cppCode/last/Melody/res/music/ギターと孤独と蒼い惑星.mp3');
+INSERT INTO `music` VALUES (1, 'Don’t say “lazy”', '放課後ティータイム', 'D:/Github/Melody/res/music/Don\'t say lazy.jpg', 'D:/Github/Melody/res/music/Don\'t say lazy.mp3', '');
+INSERT INTO `music` VALUES (2, 'ギターと孤独と蒼い惑星', '結束バンド', 'D:/Github/Melody/res/music/ギターと孤独と蒼い惑星.jpg', 'D:/Github/Melody/res/music/ギターと孤独と蒼い惑星.mp3', '');
 
 SET FOREIGN_KEY_CHECKS = 1;
