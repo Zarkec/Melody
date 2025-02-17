@@ -72,7 +72,7 @@ border-radius: 10px</string>
          <item>
           <spacer name="horizontalSpacer_6">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -112,7 +112,7 @@ QPushButton:pressed {image: url(:/res/img/minimized0.png);}</string>
          <item>
           <spacer name="horizontalSpacer_9">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -248,10 +248,10 @@ border-radius: 25px;</string>
                      <item>
                       <spacer name="horizontalSpacer_8">
                        <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
+                        <enum>Qt::Orientation::Horizontal</enum>
                        </property>
                        <property name="sizeType">
-                        <enum>QSizePolicy::Fixed</enum>
+                        <enum>QSizePolicy::Policy::Fixed</enum>
                        </property>
                        <property name="sizeHint" stdset="0">
                         <size>
@@ -296,10 +296,10 @@ color: rgb(255, 255, 255);</string>
                         <item>
                          <spacer name="horizontalSpacer_11">
                           <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                           <enum>Qt::Orientation::Horizontal</enum>
                           </property>
                           <property name="sizeType">
-                           <enum>QSizePolicy::Fixed</enum>
+                           <enum>QSizePolicy::Policy::Fixed</enum>
                           </property>
                           <property name="sizeHint" stdset="0">
                            <size>
@@ -315,7 +315,6 @@ color: rgb(255, 255, 255);</string>
                            <font>
                             <family>Microsoft YaHei UI</family>
                             <pointsize>15</pointsize>
-                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -327,7 +326,7 @@ color: rgb(255, 255, 255);</string>
                         <item>
                          <spacer name="horizontalSpacer_10">
                           <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                           <enum>Qt::Orientation::Horizontal</enum>
                           </property>
                           <property name="sizeHint" stdset="0">
                            <size>
@@ -369,10 +368,10 @@ QPushButton:pressed {image: url(:/res/img/add0.png);}
                         <item>
                          <spacer name="horizontalSpacer_12">
                           <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                           <enum>Qt::Orientation::Horizontal</enum>
                           </property>
                           <property name="sizeType">
-                           <enum>QSizePolicy::Fixed</enum>
+                           <enum>QSizePolicy::Policy::Fixed</enum>
                           </property>
                           <property name="sizeHint" stdset="0">
                            <size>
@@ -385,7 +384,7 @@ QPushButton:pressed {image: url(:/res/img/add0.png);}
                        </layout>
                       </item>
                       <item>
-                       <widget class="QListWidget" name="listWidgetLocal"/>
+                       <widget class="ListWidgetLocal" name="listWidgetLocal"/>
                       </item>
                      </layout>
                     </item>
@@ -394,7 +393,27 @@ QPushButton:pressed {image: url(:/res/img/add0.png);}
                  </item>
                 </layout>
                </widget>
-               <widget class="QWidget" name="recommendpage"/>
+               <widget class="QWidget" name="recommendpage">
+                <widget class="QWidget" name="widget_9" native="true">
+                 <property name="geometry">
+                  <rect>
+                   <x>20</x>
+                   <y>10</y>
+                   <width>771</width>
+                   <height>491</height>
+                  </rect>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(42, 42, 42);
+border-radius: 25px;</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <item>
+                   <widget class="QTableWidget" name="tableWidget_recommend"/>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
               </widget>
              </item>
             </layout>
@@ -466,7 +485,7 @@ QSlider::handle:horizontal{image: url(:/res/img/circle-fill.png);width:17px;heig
                   <number>100</number>
                  </property>
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -519,10 +538,10 @@ border-radius: 20px;</string>
              <item>
               <spacer name="horizontalSpacer_7">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -585,7 +604,6 @@ border-radius: 20px;</string>
                  <property name="font">
                   <font>
                    <family>Yu Gothic UI</family>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -596,7 +614,7 @@ border-radius: 20px;</string>
                   <string>无歌曲</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+                  <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
                  </property>
                 </widget>
                </item>
@@ -615,7 +633,7 @@ border-radius: 20px;</string>
                   <string>歌手</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                  </property>
                 </widget>
                </item>
@@ -624,10 +642,10 @@ border-radius: 20px;</string>
              <item>
               <spacer name="horizontalSpacer_3">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -674,7 +692,7 @@ QPushButton:pressed {image: url(:/res/img/heart-fill.png);}
                <item>
                 <spacer name="horizontalSpacer">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -781,7 +799,7 @@ QPushButton:pressed {image: url(:/res/img/heart-fill.png);}
                <item>
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -831,10 +849,10 @@ QPushButton:pressed {image: url(:/res/img/heart-fill.png);}
              <item>
               <spacer name="horizontalSpacer_4">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -890,17 +908,17 @@ QSlider::handle:horizontal{image: url(:/res/img/circle-fill.png);width:17px;heig
                 <number>30</number>
                </property>
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_5">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -946,7 +964,6 @@ border-radius: 10px;
                   <font>
                    <family>微软雅黑</family>
                    <pointsize>13</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -977,7 +994,6 @@ border-radius: 10px;
                   <font>
                    <family>微软雅黑</family>
                    <pointsize>13</pointsize>
-                   <weight>75</weight>
                    <italic>false</italic>
                    <bold>true</bold>
                   </font>
@@ -1009,7 +1025,6 @@ border-radius: 10px;
                   <font>
                    <family>微软雅黑</family>
                    <pointsize>13</pointsize>
-                   <weight>75</weight>
                    <italic>false</italic>
                    <bold>true</bold>
                   </font>
@@ -1063,6 +1078,13 @@ border-radius: 10px</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ListWidgetLocal</class>
+   <extends>QListWidget</extends>
+   <header>listwidgetlocal.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="res.qrc"/>
  </resources>

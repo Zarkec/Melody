@@ -20,6 +20,38 @@ Widget::Widget(QWidget* parent)
     useMysql();
     initPlayer();
     switchPage();
+
+	ShowTableItem* showTableItem = new ShowTableItem();
+	ShowTableItem* showTableItem2 = new ShowTableItem();
+
+    ui->tableWidget_recommend->clear();
+	ui->tableWidget_recommend->verticalHeader()->setVisible(false);
+	ui->tableWidget_recommend->horizontalHeader()->setVisible(false);
+	ui->tableWidget_recommend->setShowGrid(false);
+    ui->tableWidget_recommend->setFocusPolicy(Qt::NoFocus);
+    ui->tableWidget_recommend->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_recommend->setSelectionMode(QAbstractItemView::NoSelection);
+	ui->tableWidget_recommend->setColumnCount(2);
+	ui->tableWidget_recommend->setRowCount(1);
+
+	ui->tableWidget_recommend->setCellWidget(0, 0, showTableItem);
+	ui->tableWidget_recommend->setCellWidget(0, 1, showTableItem2);
+	//ui->tableWidget_recommend->setCellWidget(0, 2, showTableItem);
+    ui->tableWidget_recommend->resizeColumnsToContents();
+    ui->tableWidget_recommend->resizeRowsToContents();
+
+    //ShowItem* showItem = new ShowItem();
+    //QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlineSearch);
+
+    //// 设置 QListWidgetItem 的大小
+    //item->setSizeHint(showItem->sizeHint());
+
+    //showItem->initNetworkShowItem(music);
+
+    //// 将 ShowItem 添加到 QListWidget
+    //ui->listWidget_onlineSearch->addItem(item);
+    //ui->listWidget_onlineSearch->setItemWidget(item, showItem);
+
 }
 
 Widget::~Widget()
@@ -35,6 +67,7 @@ void Widget::initPlayer()
     connect(player, &QMediaPlayer::positionChanged, this, &Widget::do_positionChanged);
     connect(player, &QMediaPlayer::durationChanged, this, &Widget::do_durationChanged);
     connect(player, &QMediaPlayer::currentMediaChanged, this, &Widget::do_currentMediaChanged);
+	connect(ui->lineEditSearch, &QLineEdit::returnPressed, this, &Widget::on_pushButton_search_clicked);
 
 }
 
@@ -361,18 +394,6 @@ void Widget::on_timeSlider_sliderMoved(int position)
 void Widget::on_volumeSlider_valueChanged(int value)
 {
     player->setVolume(value);
-}
-
-//设置键盘监听事件
-void Widget::keyPressEvent(QKeyEvent* event)
-{
-    //检查是否按下了Enter键
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-	{
-		on_pushButton_search_clicked();
-	}
-	//调用父类的keyPressEvent函数 保证其他事件可以正常处理
-	QWidget::keyPressEvent(event);
 }
 
 //设置搜索键按下

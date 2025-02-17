@@ -19,6 +19,7 @@
 
 #include "usemysql.h"
 #include "showitem.h"
+#include "showtableitem.h"
 #include "usenetwork.h"
 
 QT_BEGIN_NAMESPACE
@@ -35,13 +36,13 @@ class Widget : public QWidget
 
 public:
     Widget(QWidget* parent = nullptr);
+    void useMysql();//mysql
     ~Widget();
 
 protected:
     void mousePressEvent(QMouseEvent* e);
     void mouseMoveEvent(QMouseEvent* e);
     void mouseReleaseEvent(QMouseEvent* e);
-    void keyPressEvent(QKeyEvent* event);
 
 public slots:
     void setImageFromUrl(const QString& url, QLabel* label);
@@ -92,7 +93,6 @@ private:
     QString songID;
     QNetworkReply* reply;
     void initBottom(QString musicName, QString musicAuthor, QString musicPicUrl);
-    void useMysql();//mysql
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);

@@ -20,6 +20,7 @@ public:
     //void getMusicInfos(QStringList& musicNameList, QStringList& musicUrlList, QStringList& musicAuthorList, QStringList& musicPicUrlList); //获取音乐信息
     QList<Music> getMusicFromMysql();
 	void insertMusicToMysql(const Music& music); //插入音乐信息
+	void deleteMusicFromMysql(const Music& music); //删除音乐信息
 
 private:
     void connectMySQL(); //连接数据库

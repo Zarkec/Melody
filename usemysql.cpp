@@ -73,6 +73,21 @@ void UseMySQL::insertMusicToMysql(const Music& music)
 	}
 }
 
+void UseMySQL::deleteMusicFromMysql(const Music& music)
+{
+	QSqlQuery query(datebase);
+	query.prepare("DELETE FROM music WHERE music_name = :music_name;");
+	query.bindValue(":music_name", music.name());
+	if (query.exec())
+	{
+		qDebug() << "Delete succeed!";
+	}
+	else
+	{
+		qDebug() << "Delete failed!";
+	}
+}
+
 //连接数据库
 void UseMySQL::connectMySQL()
 {
