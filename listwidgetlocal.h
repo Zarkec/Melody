@@ -15,6 +15,8 @@
 #include "usemysql.h"
 #include "showitem.h"
 #include "widget.h"
+#include "musiceditdialog.h"
+#include "ui_musiceditdialog.h"
 
 
 class ListWidgetLocal : public QListWidget
@@ -22,6 +24,10 @@ class ListWidgetLocal : public QListWidget
     Q_OBJECT
 public:
     ListWidgetLocal(QWidget *parent = nullptr) : QListWidget(parent) {};
+    
+signals:
+    void updateListWidgetLocal();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };

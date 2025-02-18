@@ -40,6 +40,7 @@ Widget::Widget(QWidget* parent)
     ui->tableWidget_recommend->resizeColumnsToContents();
     ui->tableWidget_recommend->resizeRowsToContents();
 
+    connect(ui->listWidgetLocal, &ListWidgetLocal::updateListWidgetLocal, this, &Widget::updateLocalMusicList);
     //ShowItem* showItem = new ShowItem();
     //QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlineSearch);
 
@@ -170,6 +171,40 @@ void Widget::useMysql()
     m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(m_LocalPlaylist);
     m_LocalPlaylist->setCurrentIndex(index);
+}
+
+void Widget::updateLocalMusicList()
+{
+    UseMySQL* useMySQL = new UseMySQL();
+    QList<Music> musicList = useMySQL->getMusicFromMysql();
+    ui->listWidgetLocal->clear(); // 清空列表
+
+    for (const Music& music : musicList)
+    {
+        ShowItem* showItem = new ShowItem();
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
+        // 设置 QListWidgetItem 的大小
+        item->setSizeHint(showItem->sizeHint());
+
+        showItem->initNetworkShowItem(music);
+        // 将 ShowItem 添加到 QListWidget
+        ui->listWidgetLocal->addItem(item);
+        ui->listWidgetLocal->setItemWidget(item, showItem);
+
+        // 将音乐 URL 添加到播放列表
+        m_LocalPlaylist->addMedia(QUrl(music.url()));
+
+    }
+
+    //保存到localMuisicList
+    m_localMusicList = musicList;
+
+    //设置本地音乐列表窗体和本地音乐播放器列表默认选中下标为index
+    //int index = 0;
+    m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+    player->setPlaylist(m_LocalPlaylist);
+    //m_LocalPlaylist->setCurrentIndex(index);
+
 }
 
 //页面的切换
@@ -355,7 +390,7 @@ void Widget::do_currentMediaChanged(const QMediaContent& media)
 
     if(player->state() != QMediaPlayer::PlayingState)
     {
-        on_pushButton_play_clicked();
+        //on_pushButton_play_clicked();
     }
 }
 
@@ -568,5 +603,5 @@ void Widget::on_pushButton_add_clicked()
 	useMySQL->insertMusicToMysql(music);
 
 	//刷新本地音乐列表
-    useMysql();
+    updateLocalMusicList();
 }

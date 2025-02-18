@@ -19,29 +19,28 @@ void ListWidgetLocal::contextMenuEvent(QContextMenuEvent *event)
 		QListWidgetItem* item = currentItem();
 		ShowItem* showItem = qobject_cast<ShowItem*>(itemWidget(item));
 		Music music = showItem->getMusic();
+        qDebug()<<"==========================="<<music.id();
 		//qDebug() << "当前点击的列表项文本：" << itemText;
 		UseMySQL* useMySQL = UseMySQL::instance();
         useMySQL->deleteMusicFromMysql(music);
-		delete item;
-
+        emit updateListWidgetLocal();
     });
     connect(action2, &QAction::triggered, [=]() {
         //qDebug() << "菜单项2被点击";
-		QDialog dialog;
-		dialog.setWindowTitle("编辑音乐");
-		dialog.setWindowIcon(QIcon(":/res/img/icon.png"));
-		dialog.setStyleSheet("QDialog{background-color: rgb(33, 33, 33);color: rgb(219, 219, 219);}");
-		QFormLayout form(&dialog);
-		form.addRow(new QLabel("Name:"), new QLineEdit());
-		form.addRow(new QLabel("Author:"), new QLineEdit());
-		form.addRow(new QLabel("Album:"), new QLineEdit());
-		form.addRow(new QLabel("PicUrl:"), new QLineEdit());
-		form.addRow(new QLabel("MusicUrl:"), new QLineEdit());
-		QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
-		form.addRow(&buttonBox);
-		connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
-		connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-		dialog.exec();
+        MusicEditDialog musicEditDialog;
+        musicEditDialog.setWindowTitle("编辑歌曲信息");
+        musicEditDialog.setFixedSize(330, 205);
+        QListWidgetItem* item = currentItem();
+        musicEditDialog.setWindowIcon(QIcon(":/res/img/icon.png"));
+        ShowItem* showItem = qobject_cast<ShowItem*>(itemWidget(item));
+        Music music = showItem->getMusic();
+        musicEditDialog.initMusicEditDialog(&music);
+        connect(&musicEditDialog, &MusicEditDialog::updateMusicList, this, [=]() 
+        {
+            emit updateListWidgetLocal();
+        });
+        musicEditDialog.exec();
+        
     });
 
     // 获取当前鼠标点击位置对应的列表项索引

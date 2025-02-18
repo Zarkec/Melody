@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     listwidgetlocal.cpp \
     main.cpp \
+    musiceditdialog.cpp \
     showitem.cpp \
     showtableitem.cpp \
     usemysql.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     listwidgetlocal.h \
     music.h \
+    musiceditdialog.h \
     showitem.h \
     showtableitem.h \
     usemysql.h \
@@ -29,6 +31,7 @@ HEADERS += \
     widget.h
 
 FORMS += \
+    musiceditdialog.ui \
     showitem.ui \
     showtableitem.ui \
     widget.ui

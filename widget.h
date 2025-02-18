@@ -37,6 +37,7 @@ class Widget : public QWidget
 public:
     Widget(QWidget* parent = nullptr);
     void useMysql();//mysql
+    void updateLocalMusicList();
     ~Widget();
 
 protected:

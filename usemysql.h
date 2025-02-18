@@ -21,9 +21,11 @@ public:
     QList<Music> getMusicFromMysql();
 	void insertMusicToMysql(const Music& music); //插入音乐信息
 	void deleteMusicFromMysql(const Music& music); //删除音乐信息
+    void updateMusicToMysql(const Music& music); //更新音乐信息
 
 private:
     void connectMySQL(); //连接数据库
+    void closeMySQL(); //关闭数据库
 
 private:
     QSqlDatabase datebase; //数据库
