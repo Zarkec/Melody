@@ -108,7 +108,7 @@ void Widget::initBottom(QString musicName, QString musicAuthor, QString musicPic
     //设置音乐名
     ui->label_musicname->setText(musicName);
     //设置作者
-    ui->label_anthor->setText(musicAuthor);
+    ui->label_author->setText(musicAuthor);
     //设置音乐图片
 
     QPixmap pixmap;
