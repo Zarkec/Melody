@@ -69,6 +69,8 @@ void Widget::initPlayer()
     connect(player, &QMediaPlayer::durationChanged, this, &Widget::do_durationChanged);
     connect(player, &QMediaPlayer::currentMediaChanged, this, &Widget::do_currentMediaChanged);
 	connect(ui->lineEditSearch, &QLineEdit::returnPressed, this, &Widget::on_pushButton_search_clicked);
+    // 连接 stateChanged 信号到槽函数
+    connect(player, &QMediaPlayer::stateChanged, this, &Widget::updatePlayButtonIcon);
 
 }
 
@@ -199,11 +201,11 @@ void Widget::updateLocalMusicList()
     //保存到localMuisicList
     m_localMusicList = musicList;
 
-    //设置本地音乐列表窗体和本地音乐播放器列表默认选中下标为index
-    //int index = 0;
-    m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
-    player->setPlaylist(m_LocalPlaylist);
-    //m_LocalPlaylist->setCurrentIndex(index);
+//    //设置本地音乐列表窗体和本地音乐播放器列表默认选中下标为index
+//    //int index = 0;
+//    m_LocalPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+//    player->setPlaylist(m_LocalPlaylist);
+//    //m_LocalPlaylist->setCurrentIndex(index);
 
 }
 
@@ -390,7 +392,25 @@ void Widget::do_currentMediaChanged(const QMediaContent& media)
 
     if(player->state() != QMediaPlayer::PlayingState)
     {
-        //on_pushButton_play_clicked();
+        on_pushButton_play_clicked();
+    }
+}
+
+void Widget::updatePlayButtonIcon(QMediaPlayer::State state)
+{
+    switch (state)
+    {
+    case QMediaPlayer::StoppedState:
+        ui->pushButton_play->setIcon(QIcon(":/res/img/play-circle-fill.png"));
+        break;
+
+    case QMediaPlayer::PlayingState:
+        ui->pushButton_play->setIcon(QIcon(":/res/img/pause-circle-fill.png"));
+        break;
+
+    case QMediaPlayer::PausedState:
+        ui->pushButton_play->setIcon(QIcon(":/res/img/play-circle-fill.png"));
+        break;
     }
 }
 

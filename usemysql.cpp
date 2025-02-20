@@ -83,6 +83,9 @@ void UseMySQL::deleteMusicFromMysql(const Music& music)
     if (!datebase.isOpen()) {
         connectMySQL();
     }
+    if (music.id() == 0) {
+        return;
+    }
 	QSqlQuery query(datebase);
     qDebug() << "Music MusicID:" << music.id();
     qDebug() << "Music Name:" << music.name();

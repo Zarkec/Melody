@@ -54,6 +54,7 @@ private slots:
     void do_positionChanged(qint64 position); //播放位置发生变化
     void do_durationChanged(qint64 duration); //播放时长发生变化
     void do_currentMediaChanged(const QMediaContent& media);
+    void updatePlayButtonIcon(QMediaPlayer::State state); //更新播放按钮图标
     void on_pushButton_play_clicked();
     void on_timeSlider_sliderMoved(int position);//进度条
     void on_volumeSlider_valueChanged(int value);//音量条
