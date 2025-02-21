@@ -130,6 +130,24 @@ void UseMySQL::updateMusicToMysql(const Music& music)
 	}
 }
 
+void UseMySQL::insertHistoryToMysql(const QString& history)
+{
+    if (!datebase.isOpen()) {
+        connectMySQL();
+    }
+	QSqlQuery query(datebase);
+	query.prepare("INSERT INTO history (history_content,create_time) VALUES (:history_content, NOW());");
+	query.bindValue(":history_content", history);
+    if (query.exec())
+	{
+		qDebug() << "Insert succeed!";
+	}
+	else
+	{
+		qDebug() << "Insert failed!";
+	}
+}
+
 //连接数据库
 void UseMySQL::connectMySQL() {
     if (!datebase.isOpen()) {
