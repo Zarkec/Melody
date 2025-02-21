@@ -497,6 +497,9 @@ void Widget::on_pushButton_search_clicked()
 {
     QString search = ui->lineEditSearch->text();
     qDebug() << "search:" << search;
+    //存储搜索历史
+    UseMySQL* useMySQL = new UseMySQL();
+    useMySQL->insertHistoryToMysql(search);
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
     usenetwork->searchOnline(search);
