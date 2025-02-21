@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>208</height>
+    <width>346</width>
+    <height>220</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,13 +29,19 @@
    <item row="0" column="1">
     <widget class="QWidget" name="widget" native="true">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(42, 42, 42);
+      <string notr="true">background-color: rgb(30, 30, 30);
 color: rgb(255, 255, 255);
-font: 75 12pt &quot;微软雅黑&quot;;</string>
+font: 75 10pt &quot;微软雅黑&quot;;</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="leftMargin">
-       <number>9</number>
+       <number>15</number>
+      </property>
+      <property name="rightMargin">
+       <number>15</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -83,7 +89,7 @@ font: 75 12pt &quot;微软雅黑&quot;;</string>
 	selection-background-color: #A0A0A0; /* 选中文本的背景颜色 */
 	selection-color: #F2F2F2; /* 选中文本的颜色 */
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
-	font-size: 10pt; /* 文本字体大小 */
+	font-size: 9pt; /* 文本字体大小 */
 }</string>
             </property>
            </widget>
@@ -130,7 +136,7 @@ font: 75 12pt &quot;微软雅黑&quot;;</string>
 	selection-background-color: #A0A0A0; /* 选中文本的背景颜色 */
 	selection-color: #F2F2F2; /* 选中文本的颜色 */
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
-	font-size: 10pt; /* 文本字体大小 */
+	font-size: 9pt; /* 文本字体大小 */
 }</string>
             </property>
            </widget>
@@ -177,7 +183,7 @@ font: 75 12pt &quot;微软雅黑&quot;;</string>
 	selection-background-color: #A0A0A0; /* 选中文本的背景颜色 */
 	selection-color: #F2F2F2; /* 选中文本的颜色 */
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
-	font-size: 10pt; /* 文本字体大小 */
+	font-size: 9pt; /* 文本字体大小 */
 }</string>
             </property>
            </widget>
@@ -224,7 +230,7 @@ font: 75 12pt &quot;微软雅黑&quot;;</string>
 	selection-background-color: #A0A0A0; /* 选中文本的背景颜色 */
 	selection-color: #F2F2F2; /* 选中文本的颜色 */
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
-	font-size: 10pt; /* 文本字体大小 */
+	font-size: 9pt; /* 文本字体大小 */
 }</string>
             </property>
            </widget>
@@ -282,7 +288,7 @@ border-radius: 10px;</string>
 	selection-background-color: #A0A0A0; /* 选中文本的背景颜色 */
 	selection-color: #F2F2F2; /* 选中文本的颜色 */
 	font-family: &quot;Microsoft YaHei&quot;; /* 文本字体族 */
-	font-size: 10pt; /* 文本字体大小 */
+	font-size: 9pt; /* 文本字体大小 */
 }</string>
             </property>
            </widget>
@@ -307,10 +313,10 @@ border-radius: 10px;</string>
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::Policy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -377,10 +383,10 @@ border-radius: 10px;</string>
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::Policy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

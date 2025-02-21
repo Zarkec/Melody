@@ -9,7 +9,7 @@ Widget::Widget(QWidget* parent)
     setWindowTitle("Melody");
     setWindowIcon(QIcon(":/res/img/icon.png"));
     setAttribute(Qt::WA_TranslucentBackground);//背景透明
-    setWindowFlags(Qt::FramelessWindowHint);//无边框
+    //setWindowFlags(Qt::FramelessWindowHint);//无边框
 
     mbPressed = false;
 
@@ -157,7 +157,7 @@ void Widget::useMysql()
         // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
 
-        showItem->initNetworkShowItem(music);
+        showItem->initLocalShowItem(music);
         // 将 ShowItem 添加到 QListWidget
         ui->listWidgetLocal->addItem(item);
         ui->listWidgetLocal->setItemWidget(item, showItem);
@@ -190,7 +190,7 @@ void Widget::updateLocalMusicList()
         // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
 
-        showItem->initNetworkShowItem(music);
+        showItem->initLocalShowItem(music);
         // 将 ShowItem 添加到 QListWidget
         ui->listWidgetLocal->addItem(item);
         ui->listWidgetLocal->setItemWidget(item, showItem);
@@ -227,6 +227,7 @@ void Widget::switchPage()
     connect(ui->pushButton_pageRecommend, &QPushButton::clicked, this, [ = ]()
     {
         ui->stackedWidget->setCurrentIndex(2);
+        updateRecommendList();
     });
 
 }

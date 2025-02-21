@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QPainter>
 
 #include "music.h"
 
