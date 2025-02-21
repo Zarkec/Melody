@@ -29,7 +29,7 @@ void ListWidgetLocal::contextMenuEvent(QContextMenuEvent *event)
         //qDebug() << "菜单项2被点击";
         MusicEditDialog musicEditDialog;
         musicEditDialog.setWindowTitle("编辑歌曲信息");
-        musicEditDialog.setFixedSize(330, 205);
+        musicEditDialog.setFixedSize(346, 220);
         QListWidgetItem* item = currentItem();
         musicEditDialog.setWindowIcon(QIcon(":/res/img/icon.png"));
         ShowItem* showItem = qobject_cast<ShowItem*>(itemWidget(item));
