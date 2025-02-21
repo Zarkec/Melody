@@ -31,14 +31,16 @@ Widget::Widget(QWidget* parent)
     ui->tableWidget_recommend->setFocusPolicy(Qt::NoFocus);
     ui->tableWidget_recommend->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_recommend->setSelectionMode(QAbstractItemView::NoSelection);
-	ui->tableWidget_recommend->setColumnCount(2);
-	ui->tableWidget_recommend->setRowCount(1);
+	//ui->tableWidget_recommend->setColumnCount(2);
+	//ui->tableWidget_recommend->setRowCount(1);
+    
+    updateRecommendList();
 
-	ui->tableWidget_recommend->setCellWidget(0, 0, showTableItem);
-	ui->tableWidget_recommend->setCellWidget(0, 1, showTableItem2);
-	//ui->tableWidget_recommend->setCellWidget(0, 2, showTableItem);
-    ui->tableWidget_recommend->resizeColumnsToContents();
-    ui->tableWidget_recommend->resizeRowsToContents();
+	//ui->tableWidget_recommend->setCellWidget(0, 0, showTableItem);
+	//ui->tableWidget_recommend->setCellWidget(0, 1, showTableItem2);
+	////ui->tableWidget_recommend->setCellWidget(0, 2, showTableItem);
+ //   ui->tableWidget_recommend->resizeColumnsToContents();
+ //   ui->tableWidget_recommend->resizeRowsToContents();
 
     connect(ui->listWidgetLocal, &ListWidgetLocal::updateListWidgetLocal, this, &Widget::updateLocalMusicList);
     //ShowItem* showItem = new ShowItem();
@@ -337,6 +339,45 @@ void Widget::setImageFromUrl(const QString& url, QLabel* label)
     // 发起网络请求
     QNetworkRequest request(url);
     manager->get(request);
+}
+
+//更新推荐列表
+void Widget::updateRecommendList()
+{
+    UseMySQL* useMySQL = new UseMySQL();
+    QList<Music> musicList = useMySQL->getMusicFromMysql();
+    ui->tableWidget_recommend->clear(); // 清空列表
+
+    // 输出解析结果
+    qDebug() << "Parsed Music List:";
+
+    for (const Music& music : musicList)
+    {
+        qDebug() << "ID:" << music.id();
+        qDebug() << "Music ID:" << music.musicId();
+        qDebug() << "Name:" << music.name();
+        qDebug() << "Author:" << music.author();
+        qDebug() << "Album:" << music.album();
+        qDebug() << "URL:" << music.url();
+        qDebug() << "Pic URL:" << music.picurl();
+        qDebug() << "Duration:" << music.duration();
+        qDebug() << "-";
+    }
+
+
+    ui->tableWidget_recommend->setRowCount((musicList.size() + 3) / 4); // 计算所需的行数
+    ui->tableWidget_recommend->setColumnCount(4);
+
+    for (int i = 0; i < musicList.size(); i++)
+    {
+        ShowTableItem* showTableItem = new ShowTableItem();
+        showTableItem->initShowTableItem(&musicList[i]);
+        ui->tableWidget_recommend->setCellWidget(i / 4, i % 4, showTableItem);
+    }
+
+
+    ui->tableWidget_recommend->resizeColumnsToContents();
+    ui->tableWidget_recommend->resizeRowsToContents();
 }
 
 //关闭窗口

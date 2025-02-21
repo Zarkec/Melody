@@ -59,7 +59,7 @@ border-radius: 20px;</string>
            <widget class="QLabel" name="label_musicname">
             <property name="font">
              <font>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -71,7 +71,7 @@ border-radius: 20px;</string>
            <widget class="QLabel" name="label_author">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="styleSheet">

@@ -98,6 +98,7 @@ private:
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);
+    void updateRecommendList();
     void changeOnlineUrl(const QString& onlineUrl);
 };
 
