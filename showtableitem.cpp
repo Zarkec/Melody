@@ -19,4 +19,13 @@ void ShowTableItem::initShowTableItem(Music* music)
     ui->label_author->setText(music->author());
     ui->label_musicname->setText(music->name());
     ui->label_pic->setPixmap(QPixmap(music->picurl()));
+    m_music = music;
 }
+
+void ShowTableItem::on_pushButton_play_clicked(Music* music)
+{
+    music=m_music;
+    qDebug() << "ShowTableItem::on_pushButton_play_clicked";
+    emit playMusic(music);
+}
+
