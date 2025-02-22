@@ -19,10 +19,15 @@ public:
     explicit ShowTableItem(QWidget *parent = nullptr);
     ~ShowTableItem();
     void initShowTableItem(Music* music);
+signals:
+    void playMusic(Music* music);
+
+private slots:
+    void on_pushButton_play_clicked(Music* music);
 
 private:
     Ui::ShowTableItem *ui;
-    Music *music;
+    Music *m_music;
 };
 
 #endif // SHOWTABLEITEM_H
