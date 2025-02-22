@@ -557,8 +557,7 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
         connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
         connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
         {
-			int index = ui->listWidget_onlineSearch->row(item);
-            m_NetworkPlaylist->setCurrentIndex(index);
+            m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
             player->play();
         });
     }
@@ -614,8 +613,8 @@ void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
 
 	//得到item的index
 	int index = ui->listWidgetLocal->row(item);
-
     m_LocalPlaylist->setCurrentIndex(index);
+
 }
 
 // 切换播放模式
