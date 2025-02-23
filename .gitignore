@@ -43,6 +43,8 @@ Thumbs.db
 
 # IDEA
 /.idea
+# Clion
+/cmake-build-debug
 
 # qtcreator generated files
 *.pro.user*
