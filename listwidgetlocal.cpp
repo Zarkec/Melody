@@ -19,7 +19,7 @@ void ListWidgetLocal::contextMenuEvent(QContextMenuEvent *event)
 		QListWidgetItem* item = currentItem();
 		ShowItem* showItem = qobject_cast<ShowItem*>(itemWidget(item));
 		Music music = showItem->getMusic();
-        qDebug()<<"==========================="<<music.id();
+        //qDebug()<<"==========================="<<music.id();
 		//qDebug() << "当前点击的列表项文本：" << itemText;
 		UseMySQL* useMySQL = UseMySQL::instance();
         useMySQL->deleteMusicFromMysql(music);

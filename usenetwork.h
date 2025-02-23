@@ -26,6 +26,7 @@ public:
     QList<Music> parseSearchJsonData(QByteArray rawData);
     void parseOnlineUrl(qint64 musicId);
     void parseOnlineUrlForList(QList<Music>& musicList);
+    void getLiricByMusicId(qint64 musicId);
     ~UseNetwork();
 
 public slots:
@@ -35,10 +36,12 @@ signals:
     // 信号：请求完成后发送在线 URL
     void onlineUrlReady(const QString& onlineUrl);
     void onlineUrlForListReady(const QList<Music>& musicList);
+    void lyricsReady(const QString& lyrics); // 信号：歌词获取完成时发出
 
 private slots:
     void readSearchReply();
     void readPicUrlReply(QNetworkReply* reply, Music* music);
+    void readLiricReply();
 
 private:
     QNetworkAccessManager* manager;

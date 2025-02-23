@@ -263,3 +263,49 @@ void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
         });
     }
 }
+
+void UseNetwork::getLiricByMusicId(qint64 musicId)
+{
+    QUrl url("http://music.163.com/api/song/media");
+    QUrlQuery query;
+    query.addQueryItem("id", QString::number(musicId));
+    url.setQuery(query);
+
+    QNetworkRequest request(url);
+    QNetworkReply* reply = manager->get(request);
+    connect(reply, &QNetworkReply::finished, this, &UseNetwork::readLiricReply);
+}
+
+void UseNetwork::readLiricReply()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    if (!reply)
+    {
+        return;
+    }
+
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray rawData = reply->readAll();
+    qDebug() << "rawData" << rawData;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
+    {
+        QJsonObject jsonObj = jsonDoc.object();
+
+        if (jsonObj.contains("lyric") && jsonObj["lyric"].isString())
+        {
+            QString liric = jsonObj["lyric"].toString();
+            qDebug() << "lyric:" << liric;
+            emit lyricsReady(liric);
+        }
+    }
+
+}

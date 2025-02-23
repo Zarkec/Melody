@@ -586,6 +586,26 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
     }
 
     initBottom(music.name(), music.author(), music.picurl());
+    useNetwork->getLiricByMusicId(music.musicId());
+    connect(useNetwork, &UseNetwork::lyricsReady, this, [ = ](QString lirics)
+    {
+        ui->lyricsListWidget->clear();
+        for (QString liric : lirics.split("\n"))
+        {
+            //[00:07.77]Will you lay me down ? \r\n
+            QString time = liric.mid(liric.indexOf("[") + 1, 8);
+            //[00:07.77]
+
+            liric = liric.mid(liric.indexOf("]") + 1);
+            if (liric.isEmpty())
+            {
+                continue;
+            }
+            //Will you lay me down ? \r\n
+            ui->lyricsListWidget->addItem(liric);
+        }
+        //ui->lyricsListWidget->addItem(liric);
+    });
     // // 输出 Music 对象的数据
     // qDebug() << "Music MusicID:" << music.musicId();
     // qDebug() << "Music Name:" << music.name();
