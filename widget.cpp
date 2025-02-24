@@ -299,8 +299,11 @@ void Widget::updateListWidget(const QList<Music>& musicList)
 
 void Widget::updateNetworkMusicList(const QList<Music>& musicList)
 {
-    m_networkMusicList = musicList;
-    m_NetworkPlaylist->clear();
+    if (!m_networkMusicList.isEmpty()) {
+        m_networkMusicList.clear();
+        m_networkMusicList = musicList;
+        m_NetworkPlaylist->clear();
+    }
 
     for (const Music& music : musicList )
     {
@@ -571,58 +574,28 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
     Music music = showItem->getMusic();
     UseNetwork* useNetwork = new UseNetwork(this);
 
-    //获取当前播放的列表
     QMediaPlaylist* playList = player->playlist();
+    bool needUpdate = (playList != m_NetworkPlaylist) || m_networkMusicList[0].url().isEmpty();
 
-    if (playList != m_NetworkPlaylist)
+    if (needUpdate)
     {
         player->stop();
-        //useNetwork->parseOnlineUrl(music.musicId());
         useNetwork->parseOnlineUrlForList(m_networkMusicList);
-        //connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
+        disconnect(this, &Widget::updateNetworkMusicListFinished, nullptr, nullptr);
         connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
-        connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
+        connect(this, &Widget::updateNetworkMusicListFinished, this, [=]()
         {
             m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
             player->play();
         });
     }
-
-    if (playList == m_NetworkPlaylist)
+    else
     {
-
-        if (m_networkMusicList[0].url().size() == 0)
-        {
-            player->stop();
-            //useNetwork->parseOnlineUrl(music.musicId());
-            useNetwork->parseOnlineUrlForList(m_networkMusicList);
-            //connect(useNetwork, &UseNetwork::onlineUrlReady, this, &Widget::changeOnlineUrl);
-            connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
-            connect(this, &Widget::updateNetworkMusicListFinished, this, [ = ]()
-            {
-                m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
-                player->play();
-            });
-        }
-        else
-        {
-            m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
-            player->play();
-        }
+        m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+        player->play();
     }
 
     updateUI(music);
-
-    // // 输出 Music 对象的数据
-    // qDebug() << "Music MusicID:" << music.musicId();
-    // qDebug() << "Music Name:" << music.name();
-    // qDebug() << "Music Author:" << music.author();
-    // qDebug() << "Music Album:" << music.album();
-    // qDebug() << "Music Url:" << music.url();
-    // qDebug() << "Music Pic:" << music.picurl();
-    // qDebug() << "Music Duration:" << music.duration();
-    // qDebug() << "-----------------------------";
-
 }
 
 void Widget::on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item)
