@@ -94,7 +94,7 @@ private:
     QList<Music> m_networkMusicList;
     QString songID;
     QNetworkReply* reply;
-    void initBottom(QString musicName, QString musicAuthor, QString musicPicUrl);
+    void updateUI(Music music);
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);

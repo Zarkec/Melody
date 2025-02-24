@@ -106,9 +106,13 @@ void Widget::mouseReleaseEvent(QMouseEvent*)
     mbPressed = false;
 }
 
-//底部信息的更新
-void Widget::initBottom(QString musicName, QString musicAuthor, QString musicPicUrl)
+//UI的更新
+void Widget::updateUI(Music music)
 {
+    //更新底部信息
+    QString musicName = music.name();
+    QString musicAuthor = music.author();
+    QString musicPicUrl = music.picurl();
     //设置音乐名
     ui->label_musicname->setText(musicName);
     //设置作者
@@ -127,6 +131,28 @@ void Widget::initBottom(QString musicName, QString musicAuthor, QString musicPic
         setImageFromUrl(musicPicUrl, ui->label_pic);
     }
 
+    //更新歌词
+    UseNetwork* useNetwork = new UseNetwork(this);
+    useNetwork->getLiricByMusicId(music.musicId());
+    connect(useNetwork, &UseNetwork::lyricsReady, this, [=](QString lirics)
+        {
+            ui->lyricsListWidget->clear();
+            for (QString liric : lirics.split("\n"))
+            {
+                //[00:07.77]Will you lay me down ? \r\n
+                QString time = liric.mid(liric.indexOf("[") + 1, 8);
+                //[00:07.77]
+
+                liric = liric.mid(liric.indexOf("]") + 1);
+                if (liric.isEmpty())
+                {
+                    continue;
+                }
+                //Will you lay me down ? \r\n
+                ui->lyricsListWidget->addItem(liric);
+            }
+            //ui->lyricsListWidget->addItem(liric);
+        });
 }
 
 //mysql
@@ -417,12 +443,12 @@ void Widget::do_durationChanged(qint64 duration)
     if(playList == m_LocalPlaylist && currentIndex >= 0 && currentIndex < m_localMusicList.size())
     {
         Music tempMusic = m_localMusicList[currentIndex];
-        initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
+        updateUI(tempMusic);
     }
     else if(playList == m_NetworkPlaylist && currentIndex >= 0 && currentIndex < m_networkMusicList.size())
     {
         Music tempMusic = m_networkMusicList[currentIndex];
-        initBottom(tempMusic.name(), tempMusic.author(), tempMusic.picurl());
+        updateUI(tempMusic);
     };
 
 }
@@ -585,27 +611,8 @@ void Widget::on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item)
         }
     }
 
-    initBottom(music.name(), music.author(), music.picurl());
-    useNetwork->getLiricByMusicId(music.musicId());
-    connect(useNetwork, &UseNetwork::lyricsReady, this, [ = ](QString lirics)
-    {
-        ui->lyricsListWidget->clear();
-        for (QString liric : lirics.split("\n"))
-        {
-            //[00:07.77]Will you lay me down ? \r\n
-            QString time = liric.mid(liric.indexOf("[") + 1, 8);
-            //[00:07.77]
+    updateUI(music);
 
-            liric = liric.mid(liric.indexOf("]") + 1);
-            if (liric.isEmpty())
-            {
-                continue;
-            }
-            //Will you lay me down ? \r\n
-            ui->lyricsListWidget->addItem(liric);
-        }
-        //ui->lyricsListWidget->addItem(liric);
-    });
     // // 输出 Music 对象的数据
     // qDebug() << "Music MusicID:" << music.musicId();
     // qDebug() << "Music Name:" << music.name();
