@@ -28,5 +28,9 @@
         <file>res/img/add1.png</file>
         <file>res/img/delete0.png</file>
         <file>res/img/delete1.png</file>
+        <file>res/img/music0.png</file>
+        <file>res/img/music1.png</file>
+        <file>res/img/playlist0.png</file>
+        <file>res/img/playlist1.png</file>
     </qresource>
 </RCC>
