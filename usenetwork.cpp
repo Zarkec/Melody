@@ -20,22 +20,33 @@ UseNetwork::~UseNetwork()
     }
 }
 
-void UseNetwork::searchOnline(const QString& search)
+void UseNetwork::searchOnline(const QString& search,QString searchType)
 {
     QUrl url("http://music.163.com/api/search/get");
     QUrlQuery query;
     query.addQueryItem("s", search);
-    query.addQueryItem("type", "1");
+    //单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002) 
+    query.addQueryItem("type", searchType);
     query.addQueryItem("offset", "0");
     query.addQueryItem("limit", "35");
     url.setQuery(query);
 
+    qDebug() << "search url" << url;
+
     QNetworkRequest request(url);
     QNetworkReply* reply = manager->get(request);
-    connect(reply, &QNetworkReply::finished, this, &UseNetwork::readSearchReply);
+    if (searchType == "1")
+    {
+        connect(reply, &QNetworkReply::finished, this, &UseNetwork::readMusicSearchReply);
+    }
+    else if (searchType == "1000")
+    {
+        qDebug() << "===============playlist search============";
+        connect(reply, &QNetworkReply::finished, this, &UseNetwork::readPlayListSearchReply);
+    }
 }
 
-void UseNetwork::readSearchReply()
+void UseNetwork::readMusicSearchReply()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 
@@ -69,6 +80,11 @@ void UseNetwork::readSearchReply()
     }
 
     reply->deleteLater();
+}
+
+void UseNetwork::readPlayListSearchReply()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 }
 
 void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)

@@ -30,7 +30,7 @@ public:
     ~UseNetwork();
 
 public slots:
-    void searchOnline(const QString& search);
+    void searchOnline(const QString& search,QString searchType);
 signals:
     void searchFinished(const QList<Music>& musicList); // 信号：搜索完成时发出
     // 信号：请求完成后发送在线 URL
@@ -39,7 +39,8 @@ signals:
     void lyricsReady(const QString& lyrics); // 信号：歌词获取完成时发出
 
 private slots:
-    void readSearchReply();
+    void readMusicSearchReply();
+    void readPlayListSearchReply();
     void readPicUrlReply(QNetworkReply* reply, Music* music);
     void readLiricReply();
 

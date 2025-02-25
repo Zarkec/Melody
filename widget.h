@@ -87,6 +87,7 @@ private:
     QString musicAuthor;//音乐作者
     QString musicPicUrl;//封面图片
     QString musicUrl;//音乐地址
+    QString searchType;
     QList<Music> m_localMusicList;
     QList<Music> m_networkMusicList;
     QString songID;

@@ -528,6 +528,15 @@ void Widget::on_volumeSlider_valueChanged(int value)
 //设置搜索键按下
 void Widget::on_pushButton_search_clicked()
 {
+    //判断搜索模式
+    //单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002) 
+    if(ui->radioButton_music->isChecked())
+    {
+        searchType = "1";
+    }else if(ui->radioButton_playlist->isChecked())
+    {
+        searchType = "1000";
+    }
     QString search = ui->lineEditSearch->text();
     qDebug() << "search:" << search;
     //存储搜索历史
@@ -535,7 +544,7 @@ void Widget::on_pushButton_search_clicked()
     useMySQL->insertHistoryToMysql(search);
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
-    usenetwork->searchOnline(search);
+    usenetwork->searchOnline(search, searchType);
     connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
 }
 
