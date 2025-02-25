@@ -62,16 +62,13 @@ private slots:
     void initPlayer();
     void on_pushButton_Prev_clicked(); //上一曲
     void on_pushButton_Next_clicked();//下一曲
-
     void on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item);
-
     void on_listWidgetLocal_itemDoubleClicked(QListWidgetItem* item);
-
     void on_pushButton_bfmode_clicked();// 切换播放模式
-
     void on_pushButton_minimize_clicked();
-
     void on_pushButton_add_clicked();// 添加本地音乐按钮
+    void on_radioButton_music_toggled(bool checked);
+    void on_radioButton_playlist_toggled(bool checked);
 
 public:
 signals:

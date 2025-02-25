@@ -17,6 +17,9 @@ Widget::Widget(QWidget* parent)
     m_LocalPlaylist = new QMediaPlaylist(this);
     m_NetworkPlaylist = new QMediaPlaylist(this);
 
+    ui->radioButton_music->setChecked(true);
+    ui->radioButton_playlist->setChecked(false);
+
     useMysql();
     initPlayer();
     switchPage();
@@ -669,3 +672,16 @@ void Widget::on_pushButton_add_clicked()
 	//刷新本地音乐列表
     updateLocalMusicList();
 }
+
+void Widget::on_radioButton_music_toggled(bool checked)
+{
+    qDebug()<<"======================music"<<checked;
+
+}
+
+
+void Widget::on_radioButton_playlist_toggled(bool checked)
+{
+    qDebug()<<"======================playlist"<<checked;
+}
+
