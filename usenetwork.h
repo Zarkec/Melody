@@ -16,6 +16,7 @@
 #include <QFutureWatcher>
 
 #include "music.h"
+#include "playlist.h"
 
 class UseNetwork : public QObject
 {
@@ -23,7 +24,8 @@ class UseNetwork : public QObject
 
 public:
     UseNetwork(QObject* parent = nullptr);
-    QList<Music> parseSearchJsonData(QByteArray rawData);
+    QList<Music> parseMusicSearchJsonData(QByteArray rawData);
+    QList<Music> parsePlayListSearchJsonData(QByteArray rawData);
     void parseOnlineUrl(qint64 musicId);
     void parseOnlineUrlForList(QList<Music>& musicList);
     void getLiricByMusicId(qint64 musicId);
@@ -48,6 +50,7 @@ private:
     QNetworkAccessManager* manager;
     QNetworkReply* reply;
     QList<Music> m_musicList;
+    QList<Playlist> m_playlistList;
     int m_pendingRequests;
 };
 

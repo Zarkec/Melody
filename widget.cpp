@@ -537,6 +537,10 @@ void Widget::on_pushButton_search_clicked()
     {
         searchType = "1000";
     }
+    else
+    {
+        searchType = "1";
+    }
     QString search = ui->lineEditSearch->text();
     qDebug() << "search:" << search;
     //存储搜索历史

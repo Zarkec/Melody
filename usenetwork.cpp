@@ -63,7 +63,7 @@ void UseNetwork::readMusicSearchReply()
     }
 
     QByteArray rawData = reply->readAll();
-    m_musicList = parseSearchJsonData(rawData);
+    m_musicList = parseMusicSearchJsonData(rawData);
 
     // 发起获取图片URL的请求
     m_pendingRequests = m_musicList.size();
@@ -85,6 +85,21 @@ void UseNetwork::readMusicSearchReply()
 void UseNetwork::readPlayListSearchReply()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply)
+    {
+        return;
+    }
+
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray rawData = reply->readAll();
+    qDebug() << "================rawData===============" << rawData;
+    m_musicList = parsePlayListSearchJsonData(rawData);
 }
 
 void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
@@ -131,7 +146,7 @@ void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
     }
 }
 
-QList<Music> UseNetwork::parseSearchJsonData(QByteArray rawData)
+QList<Music> UseNetwork::parseMusicSearchJsonData(QByteArray rawData)
 {
     QList<Music> musicList;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
@@ -209,6 +224,12 @@ QList<Music> UseNetwork::parseSearchJsonData(QByteArray rawData)
     }
 
     return musicList;
+}
+
+QList<Music> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
+{
+    QList<Playlist> playlist;
+
 }
 
 void UseNetwork::parseOnlineUrl(qint64 musicId)
