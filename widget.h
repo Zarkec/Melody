@@ -19,6 +19,7 @@
 
 #include "usemysql.h"
 #include "showitem.h"
+#include "showplaylistitem.h"
 #include "showtableitem.h"
 #include "usenetwork.h"
 
@@ -96,6 +97,7 @@ private:
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);
+    void updatePlayListWidget(const QList<Playlist>& plalist);
     void updateRecommendList();
     void changeOnlineUrl(const QString& onlineUrl);
 };

@@ -264,6 +264,7 @@ void Widget::switchPage()
 //更新搜索的item
 void Widget::updateListWidget(const QList<Music>& musicList)
 {
+    ui->stackedWidget_search->setCurrentIndex(0); // 切换到搜索页面
     ui->listWidget_onlineSearch->clear(); // 清空列表
 
     // 输出解析结果
@@ -298,6 +299,37 @@ void Widget::updateListWidget(const QList<Music>& musicList)
     }
 
     m_networkMusicList = musicList;
+}
+
+//更新搜索的歌单
+void Widget::updatePlayListWidget(const QList<Playlist>& playlist)
+{
+    ui->stackedWidget_search->setCurrentIndex(1); // 切换到播放列表页面
+    ui->listWidget_onlinePlayListSearch->clear(); // 清空列表
+    for (const Playlist& p : playlist)
+    {
+        qDebug() << "=========playlist==========";
+        qDebug() << "Playlist ID:" << p.playlistId();
+        qDebug() << "Playlist Name:" << p.name();
+        qDebug() << "Playlist Pic URL:" << p.picurl();
+    }
+
+    for (const Playlist& p : playlist)
+    {
+        ShowPlayListItem* showPlayListItem = new ShowPlayListItem();
+        //ShowItem* showItem = new ShowItem();
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlinePlayListSearch);
+
+        // 设置 QListWidgetItem 的大小
+        item->setSizeHint(showPlayListItem->sizeHint());
+
+        showPlayListItem->initPlayListShowItem(p);
+
+        // 将 ShowItem 添加到 QListWidget
+        ui->listWidget_onlinePlayListSearch->addItem(item);
+        ui->listWidget_onlinePlayListSearch->setItemWidget(item, showPlayListItem);
+    }
+
 }
 
 void Widget::updateNetworkMusicList(const QList<Music>& musicList)
@@ -549,7 +581,8 @@ void Widget::on_pushButton_search_clicked()
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
     usenetwork->searchOnline(search, searchType);
-    connect(usenetwork, &UseNetwork::searchFinished, this, &Widget::updateListWidget);
+    connect(usenetwork, &UseNetwork::searchMusicFinished, this, &Widget::updateListWidget);
+    connect(usenetwork, &UseNetwork::searchPlayListFinished, this, &Widget::updatePlayListWidget);
 }
 
 //上一曲

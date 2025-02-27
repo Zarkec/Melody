@@ -418,7 +418,31 @@ QRadioButton::indicator:checked {
                      </layout>
                     </item>
                     <item>
-                     <widget class="QListWidget" name="listWidget_onlineSearch"/>
+                     <widget class="QStackedWidget" name="stackedWidget_search">
+                      <property name="currentIndex">
+                       <number>1</number>
+                      </property>
+                      <widget class="QWidget" name="page">
+                       <layout class="QVBoxLayout" name="verticalLayout_10">
+                        <item>
+                         <widget class="QListWidget" name="listWidget_onlineSearch"/>
+                        </item>
+                       </layout>
+                      </widget>
+                      <widget class="QWidget" name="page_2">
+                       <layout class="QGridLayout" name="gridLayout_7">
+                        <item row="0" column="0">
+                         <widget class="QSplitter" name="splitter_2">
+                          <property name="orientation">
+                           <enum>Qt::Orientation::Horizontal</enum>
+                          </property>
+                          <widget class="QListWidget" name="listWidget_onlinePlayListSearch"/>
+                          <widget class="QListWidget" name="listWidget"/>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </widget>
                     </item>
                    </layout>
                   </widget>

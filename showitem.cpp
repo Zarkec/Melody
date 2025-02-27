@@ -54,6 +54,16 @@ void ShowItem::initNetworkShowItem(const Music& music)
     setMusicPic(music.picurl());
 }
 
+void ShowItem::initPlayListShowItem(const Playlist& playlist)
+{
+    m_playlist = playlist;
+    ui->label_musicid->setText(QString::number(playlist.id()));
+    ui->label_musicname->setText(playlist.name());
+    ui->label_author->setVisible(false);
+    setMusicPic(playlist.picurl());
+
+}
+
 void ShowItem::setMusicId(QString musicId)
 {
     ui->label_musicid->setText(musicId);

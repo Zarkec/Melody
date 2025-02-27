@@ -8,6 +8,7 @@
 #include <QNetworkReply>
 
 #include "music.h"
+#include "playlist.h"
 
 namespace Ui
 {
@@ -23,6 +24,7 @@ public:
     ~ShowItem();
     void initLocalShowItem(const Music& music);
     void initNetworkShowItem(const Music& music);
+    void initPlayListShowItem(const Playlist& playlist);
     void setMusicId(QString musicId);
     void setMusicName(QString musicName);
     void setMusicAuthor(QString musicAuthor);
@@ -34,6 +36,7 @@ public:
 private:
     Ui::ShowItem* ui;
     Music m_music;
+    Playlist m_playlist;
 };
 
 #endif // SHOWITEM_H

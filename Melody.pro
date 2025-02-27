@@ -13,6 +13,7 @@ SOURCES += \
     main.cpp \
     musiceditdialog.cpp \
     showitem.cpp \
+    showplaylistitem.cpp \
     showtableitem.cpp \
     usemysql.cpp \
     usenetwork.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     music.h \
     musiceditdialog.h \
     showitem.h \
+    showplaylistitem.h \
     showtableitem.h \
     usemysql.h \
     usenetwork.h \
@@ -33,6 +35,7 @@ HEADERS += \
 FORMS += \
     musiceditdialog.ui \
     showitem.ui \
+    showplaylistitem.ui \
     showtableitem.ui \
     widget.ui
 

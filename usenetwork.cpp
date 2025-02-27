@@ -41,7 +41,6 @@ void UseNetwork::searchOnline(const QString& search,QString searchType)
     }
     else if (searchType == "1000")
     {
-        qDebug() << "===============playlist search============";
         connect(reply, &QNetworkReply::finished, this, &UseNetwork::readPlayListSearchReply);
     }
 }
@@ -99,7 +98,8 @@ void UseNetwork::readPlayListSearchReply()
 
     QByteArray rawData = reply->readAll();
     qDebug() << "================rawData===============" << rawData;
-    m_musicList = parsePlayListSearchJsonData(rawData);
+    m_playlist = parsePlayListSearchJsonData(rawData);
+    emit searchPlayListFinished(m_playlist);
 }
 
 void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
@@ -142,7 +142,7 @@ void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
 
     if (m_pendingRequests == 0)
     {
-        emit searchFinished(m_musicList);
+        emit searchMusicFinished(m_musicList);
     }
 }
 
@@ -226,10 +226,53 @@ QList<Music> UseNetwork::parseMusicSearchJsonData(QByteArray rawData)
     return musicList;
 }
 
-QList<Music> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
+QList<Playlist> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
 {
-    QList<Playlist> playlist;
+    QList<Playlist> playlistList;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
+    {
+        QJsonObject jsonObj = jsonDoc.object();
 
+        if (jsonObj.contains("result") && jsonObj["result"].isObject())
+        {
+            QJsonObject resultObj = jsonObj["result"].toObject();
+            if (resultObj.contains("playlists") && resultObj["playlists"].isArray())
+            {
+                QJsonArray playlistsArray = resultObj["playlists"].toArray();
+
+                int counter = 1;
+
+                for (const QJsonValue& playlistValue : playlistsArray)
+                {
+                    if (playlistValue.isObject())
+                    {
+                        QJsonObject playlistObj = playlistValue.toObject();
+                        Playlist playlist;
+
+                        if (playlistObj.contains("id") && playlistObj["id"].isDouble())
+                        {
+                            qint64 playlistId = playlistObj["id"].toVariant().toLongLong();
+                            playlist.setPlaylistId(playlistId);
+                            playlist.setId(counter);
+                            counter++;
+                        }
+                        if (playlistObj.contains("name") && playlistObj["name"].isString())
+                        {
+                            playlist.setName(playlistObj["name"].toString());
+                        }
+                        if (playlistObj.contains("coverImgUrl") && playlistObj["coverImgUrl"].isString())
+                        {
+                            playlist.setPicurl(playlistObj["coverImgUrl"].toString() + "?param=300y300");
+                        }
+
+                        playlistList.append(playlist);
+                    }
+                }
+            }
+        }
+    }
+    return playlistList;
 }
 
 void UseNetwork::parseOnlineUrl(qint64 musicId)
