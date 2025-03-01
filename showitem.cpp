@@ -8,6 +8,12 @@ ShowItem::ShowItem(QWidget* parent) :
     ui->setupUi(this);
 }
 
+// 共享网络管理器
+static QNetworkAccessManager& sharedManager() {
+    static QNetworkAccessManager instance;
+    return instance;
+}
+
 ShowItem::~ShowItem()
 {
     delete ui;
@@ -135,18 +141,25 @@ void networkReplyFinish(QNetworkReply* reply, QLabel* label)
 
 void ShowItem::setImageFromUrl(const QString& url, QLabel* label)
 {
-    QNetworkAccessManager* manager = new QNetworkAccessManager();
+    static QCache<QString, QPixmap> imageCache(1024 * 1024 * 20); // 50MB缓存
 
-    // 连接信号和槽
-    QObject::connect(manager, &QNetworkAccessManager::finished,
-                     [ = ](QNetworkReply* reply)
-    {
-        networkReplyFinish(reply, label);
-    });
+    if (imageCache.contains(url)) {
+        label->setPixmap(*imageCache[url]);
+        return;
+    }
 
-    // 发起网络请求
     QNetworkRequest request(url);
-    manager->get(request);
+    QNetworkReply* reply = sharedManager().get(request);
+
+    QObject::connect(reply, &QNetworkReply::finished, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QPixmap* pixmap = new QPixmap();
+            pixmap->loadFromData(reply->readAll());
+            imageCache.insert(url, pixmap); // 自动管理内存
+            label->setPixmap(*pixmap);
+        }
+        reply->deleteLater();
+        });
 }
 
 Music ShowItem::getMusic()

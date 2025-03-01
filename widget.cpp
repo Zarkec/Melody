@@ -65,6 +65,25 @@ Widget::~Widget()
     delete ui;
 }
 
+void printMusicList(const QList<Music>& musicList)
+{
+    // 输出解析结果
+    qDebug() << "====Parsed Music List:====";
+
+    for (const Music& music : musicList)
+    {
+        qDebug() << "ID:" << music.id();
+        qDebug() << "Music ID:" << music.musicId();
+        qDebug() << "Name:" << music.name();
+        qDebug() << "Author:" << music.author();
+        qDebug() << "Album:" << music.album();
+        qDebug() << "URL:" << music.url();
+        qDebug() << "Pic URL:" << music.picurl();
+        qDebug() << "Duration:" << music.duration();
+        qDebug() << "-----------------------------";
+    }
+}
+
 void Widget::initPlayer()
 {
     //初始化音量
@@ -78,12 +97,29 @@ void Widget::initPlayer()
     connect(player, &QMediaPlayer::stateChanged, this, &Widget::updatePlayButtonIcon);
     if (ui->listWidget_onlineSearch->count() == 0)
     {
-        UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
-        // 连接信号和槽
+        //UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
+        //// 连接信号和槽
+        //Playlist tempPlaylist; // 创建一个自动变量而不是引用
+        //tempPlaylist.setPlaylistId(3778678);
+        //usenetwork->parseOnlinePlatListUrl(tempPlaylist);
+        //connect(usenetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+        QThread* thread = new QThread(this);
+        UseNetwork* worker = new UseNetwork(thread);
         Playlist tempPlaylist; // 创建一个自动变量而不是引用
         tempPlaylist.setPlaylistId(3778678);
-        usenetwork->parseOnlinePlatListUrl(tempPlaylist);
-        connect(usenetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+
+        worker->moveToThread(thread);
+
+        connect(thread, &QThread::started, worker, [worker, tempPlaylist]() {
+            worker->parseOnlinePlatListUrl(tempPlaylist);
+            });
+        connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+        connect(worker, &UseNetwork::searchOnlinePlatListFinished, thread, &QThread::quit);
+        connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+        connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+
+        thread->start();
+        qDebug() << "Thread started:" << thread->isRunning();
     }
 }
 
@@ -176,18 +212,8 @@ void Widget::useMysql()
     UseMySQL* useMySQL = new UseMySQL();
     QList<Music> musicList = useMySQL->getMusicFromMysql();
 
-    for (const Music& music : musicList)
-    {
-        qDebug() << "ID:" << music.id();
-        qDebug() << "Music ID:" << music.musicId();
-        qDebug() << "Name:" << music.name();
-        qDebug() << "Author:" << music.author();
-        qDebug() << "Album:" << music.album();
-        qDebug() << "URL:" << music.url();
-        qDebug() << "Pic URL:" << music.picurl();
-        qDebug() << "Duration:" << music.duration();
-        qDebug() << "-----------------------------";
-    }
+    //输出解析结果
+    printMusicList(musicList);
 
     ui->listWidgetLocal->clear(); // 清空列表
 
@@ -279,21 +305,7 @@ void Widget::updateListWidget(const QList<Music>& musicList)
     ui->stackedWidget_search->setCurrentIndex(0); // 切换到搜索页面
     ui->listWidget_onlineSearch->clear(); // 清空列表
 
-    // 输出解析结果
-    qDebug() << "Parsed Music List:";
-
-    for (const Music& music : musicList)
-    {
-        qDebug() << "ID:" << music.id();
-        qDebug() << "Music ID:" << music.musicId();
-        qDebug() << "Name:" << music.name();
-        qDebug() << "Author:" << music.author();
-        qDebug() << "Album:" << music.album();
-        qDebug() << "URL:" << music.url();
-        qDebug() << "Pic URL:" << music.picurl();
-        qDebug() << "Duration:" << music.duration();
-        qDebug() << "-----------------------------";
-    }
+    printMusicList(musicList);
 
     for (const Music& music : musicList)
     {
@@ -348,21 +360,7 @@ void Widget::updatePlayListMuiscWidget(const QList<Music>& musicList)
 {
     ui->listWidget_playlist_music->clear(); // 清空列表
 
-    // 输出解析结果
-    qDebug() << "Parsed Music List:";
-
-    for (const Music& music : musicList)
-    {
-        qDebug() << "ID:" << music.id();
-        qDebug() << "Music ID:" << music.musicId();
-        qDebug() << "Name:" << music.name();
-        qDebug() << "Author:" << music.author();
-        qDebug() << "Album:" << music.album();
-        qDebug() << "URL:" << music.url();
-        qDebug() << "Pic URL:" << music.picurl();
-        qDebug() << "Duration:" << music.duration();
-        qDebug() << "-----------------------------";
-    }
+    printMusicList(musicList);
 
     for (const Music& music : musicList)
     {
@@ -391,18 +389,10 @@ void Widget::updateNetworkMusicList(const QList<Music>& musicList)
         m_NetworkPlaylist->clear();
     }
 
+    printMusicList(musicList);
+
     for (const Music& music : musicList )
     {
-        // 输出 Music 对象的数据
-        qDebug() << "Music MusicID:" << music.musicId();
-        qDebug() << "Music Name:" << music.name();
-        qDebug() << "Music Author:" << music.author();
-        qDebug() << "Music Album:" << music.album();
-        qDebug() << "Music Url:" << music.url();
-        qDebug() << "Music Pic:" << music.picurl();
-        qDebug() << "Music Duration:" << music.duration();
-        qDebug() << "-----------------------------";
-        // 将音乐 URL 添加到播放列表
         m_NetworkPlaylist->addMedia(QUrl(music.url()));
     }
 
@@ -464,21 +454,7 @@ void Widget::updateRecommendList()
     QList<Music> musicList = useMySQL->getMusicFromMysql();
     ui->tableWidget_recommend->clear(); // 清空列表
 
-    // 输出解析结果
-    qDebug() << "Parsed Music List:";
-
-    for (const Music& music : musicList)
-    {
-        qDebug() << "ID:" << music.id();
-        qDebug() << "Music ID:" << music.musicId();
-        qDebug() << "Name:" << music.name();
-        qDebug() << "Author:" << music.author();
-        qDebug() << "Album:" << music.album();
-        qDebug() << "URL:" << music.url();
-        qDebug() << "Pic URL:" << music.picurl();
-        qDebug() << "Duration:" << music.duration();
-        qDebug() << "-";
-    }
+    printMusicList(musicList);
 
 
     ui->tableWidget_recommend->setRowCount((musicList.size() + 3) / 4); // 计算所需的行数
@@ -634,6 +610,7 @@ void Widget::on_pushButton_search_clicked()
     usenetwork->searchOnline(search, searchType);
     connect(usenetwork, &UseNetwork::searchMusicFinished, this, &Widget::updateListWidget);
     connect(usenetwork, &UseNetwork::searchPlayListFinished, this, &Widget::updatePlayListWidget);
+
 }
 
 //上一曲
@@ -773,7 +750,6 @@ void Widget::on_pushButton_add_clicked()
 void Widget::on_radioButton_music_toggled(bool checked)
 {
     qDebug()<<"======================music"<<checked;
-
 }
 
 
@@ -788,9 +764,24 @@ void Widget::on_listWidget_onlinePlayListSearch_itemDoubleClicked(QListWidgetIte
     ShowPlayListItem* showPlayListItem = qobject_cast<ShowPlayListItem*>(ui->listWidget_onlinePlayListSearch->itemWidget(item));
     Playlist playlist = showPlayListItem->getPlaylist();
 
-    UseNetwork* useNetwork = new UseNetwork(this);
-    useNetwork->parseOnlinePlatListUrl(playlist);
-    connect(useNetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updatePlayListMuiscWidget);
+    //UseNetwork* useNetwork = new UseNetwork(this);
+    //useNetwork->parseOnlinePlatListUrl(playlist);
+    //connect(useNetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updatePlayListMuiscWidget);
+
+    QThread* thread = new QThread(this);
+    UseNetwork* worker = new UseNetwork(thread);
+
+    worker->moveToThread(thread);
+
+    connect(thread, &QThread::started, worker, [worker, playlist]() {
+        worker->parseOnlinePlatListUrl(playlist);
+        });
+    connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updatePlayListMuiscWidget);
+    connect(worker, &UseNetwork::searchOnlinePlatListFinished, thread, &QThread::quit);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+
+    thread->start();
 }
 
 void Widget::on_listWidget_playlist_music_itemDoubleClicked(QListWidgetItem* item)

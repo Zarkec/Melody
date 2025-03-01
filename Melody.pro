@@ -1,4 +1,4 @@
-QT       += core gui network multimedia sql
+QT       += core gui network multimedia sql concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

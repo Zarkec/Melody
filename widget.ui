@@ -175,7 +175,7 @@ QPushButton:pressed {image: url(:/res/img/close0.png);}</string>
              <item row="0" column="0">
               <widget class="QStackedWidget" name="stackedWidget">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="searchpage">
                 <layout class="QGridLayout" name="gridLayout_3">

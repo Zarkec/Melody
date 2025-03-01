@@ -340,55 +340,115 @@ QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData(QByteArray rawData)
     return musicList;
 }
 
-QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
+//QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
+//{
+//    QList<Music> musicList;
+//    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+//    if (!jsonDoc.isNull() && jsonDoc.isObject())
+//    {
+//        QJsonObject jsonObj = jsonDoc.object();
+//        if (jsonObj.contains("results") && jsonObj["results"].isArray())
+//        {
+//            QJsonArray resultArray = jsonObj["results"].toArray();
+//            if (!resultArray.isEmpty()) {
+//                QJsonObject resultObj = resultArray[0].toObject();
+//                if (resultObj.contains("List") && resultObj["List"].isArray())
+//                {
+//                    QJsonArray ListArray = resultObj["List"].toArray();
+//
+//                    int counter = 1;
+//                    for (const QJsonValue& ListValue : ListArray)
+//                    {
+//                        if (ListValue.isObject())
+//                        {
+//                            QJsonObject ListObj = ListValue.toObject();
+//                            Music music;
+//                            if (ListObj.contains("rid") && ListObj["rid"].isDouble())
+//                            {
+//                                qint64 MusicId = ListObj["rid"].toVariant().toLongLong();
+//                                music.setMusicId(MusicId);
+//                                music.setId(counter);
+//                                counter++;
+//                            }
+//                            if (ListObj.contains("name") && ListObj["name"].isString())
+//                            {
+//                                music.setName(ListObj["name"].toString());
+//                            }
+//                            if (ListObj.contains("pic") && ListObj["pic"].isString())
+//                            {
+//                                music.setPicurl(ListObj["pic"].toString());
+//                            }
+//                            if (ListObj.contains("artist") && ListObj["artist"].isString())
+//                            {
+//                                music.setAuthor(ListObj["artist"].toString());
+//                            }
+//                            musicList.append(music);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    return musicList;
+//}
+
+QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData) 
 {
     QList<Music> musicList;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
-    if (!jsonDoc.isNull() && jsonDoc.isObject())
-    {
-        QJsonObject jsonObj = jsonDoc.object();
-        if (jsonObj.contains("results") && jsonObj["results"].isArray())
-        {
-            QJsonArray resultArray = jsonObj["results"].toArray();
-            if (!resultArray.isEmpty()) {
-                QJsonObject resultObj = resultArray[0].toObject();
-                if (resultObj.contains("List") && resultObj["List"].isArray())
-                {
-                    QJsonArray ListArray = resultObj["List"].toArray();
+    if (jsonDoc.isNull() || !jsonDoc.isObject()) 
+        return musicList;
 
-                    int counter = 1;
-                    for (const QJsonValue& ListValue : ListArray)
-                    {
-                        if (ListValue.isObject())
-                        {
-                            QJsonObject ListObj = ListValue.toObject();
-                            Music music;
-                            if (ListObj.contains("rid") && ListObj["rid"].isDouble())
-                            {
-                                qint64 MusicId = ListObj["rid"].toVariant().toLongLong();
-                                music.setMusicId(MusicId);
-                                music.setId(counter);
-                                counter++;
-                            }
-                            if (ListObj.contains("name") && ListObj["name"].isString())
-                            {
-                                music.setName(ListObj["name"].toString());
-                            }
-                            if (ListObj.contains("pic") && ListObj["pic"].isString())
-                            {
-                                music.setPicurl(ListObj["pic"].toString());
-                            }
-                            if (ListObj.contains("artist") && ListObj["artist"].isString())
-                            {
-                                music.setAuthor(ListObj["artist"].toString());
-                            }
-                            musicList.append(music);
-                        }
-                    }
-                }
-            }
+    QJsonObject jsonObj = jsonDoc.object();
+    if (!jsonObj.contains("results") || !jsonObj["results"].isArray())
+        return musicList;
+
+    QJsonArray resultArray = jsonObj["results"].toArray();
+    if (resultArray.isEmpty())
+        return musicList;
+
+    QJsonObject resultObj = resultArray[0].toObject();
+    if (!resultObj.contains("List") || !resultObj["List"].isArray())
+        return musicList;
+
+    QJsonArray listArray = resultObj["List"].toArray();
+
+    // 预分配内存（减少动态扩容开销）
+    musicList.reserve(listArray.size());
+
+    // 并行处理核心逻辑
+    QFutureSynchronizer<void> synchronizer;
+    QMutex listMutex; // 用于线程安全操作musicList
+    std::atomic<int> counter(1); // 原子操作的计数器
+
+    QtConcurrent::blockingMap(listArray, [&](const QJsonValue& listValue) {
+        if (!listValue.isObject()) return;
+
+        QJsonObject listObj = listValue.toObject();
+        Music music;
+
+        // 原子操作保证计数唯一性
+        int currentId = counter.fetch_add(1, std::memory_order_relaxed);
+        music.setId(currentId);
+
+        if (listObj.contains("rid") && listObj["rid"].isDouble()) {
+            music.setMusicId(listObj["rid"].toVariant().toLongLong());
         }
-    }
+        if (listObj.contains("name") && listObj["name"].isString()) {
+            music.setName(listObj["name"].toString());
+        }
+        if (listObj.contains("pic") && listObj["pic"].isString()) {
+            music.setPicurl(listObj["pic"].toString());
+        }
+        if (listObj.contains("artist") && listObj["artist"].isString()) {
+            music.setAuthor(listObj["artist"].toString());
+        }
+
+        // 线程安全的列表追加
+        QMutexLocker locker(&listMutex);
+        musicList.append(music);
+    });
+
     return musicList;
 }
 
@@ -474,7 +534,7 @@ void UseNetwork::parseOnlineUrl(qint64 musicId)
     });
 }
 
-void UseNetwork::parseOnlinePlatListUrl(Playlist& playlist)
+void UseNetwork::parseOnlinePlatListUrl(Playlist playlist)
 {
     // 解析官方的url不稳定
     //QUrl url("https://music.163.com/api/playlist/detail?id=" + QString::number(playlist.playlistId()));

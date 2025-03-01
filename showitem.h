@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QCache>
+#include <QThread>
 
 #include "music.h"
 #include "playlist.h"

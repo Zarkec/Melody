@@ -14,6 +14,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QVector>
 
 #include "music.h"
 #include "playlist.h"
@@ -29,7 +30,7 @@ public:
     QList<Music> parsePlayListMusicsSearchJsonData2(QByteArray rawData);
     QList<Playlist> parsePlayListSearchJsonData(QByteArray rawData);
     void parseOnlineUrl(qint64 musicId);
-    void parseOnlinePlatListUrl(Playlist& playlist);
+    void parseOnlinePlatListUrl(Playlist playlist);
     void parseOnlineUrlForList(QList<Music>& musicList);
     void getLiricByMusicId(qint64 musicId);
     ~UseNetwork();
