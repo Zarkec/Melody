@@ -69,6 +69,11 @@ void ShowPlayListItem::setImageFromUrl(const QString& url, QLabel* label)
     manager->get(request);
 }
 
+Playlist ShowPlayListItem::getPlaylist() const
+{
+    return m_playlist;
+}
+
 ShowPlayListItem::~ShowPlayListItem()
 {
     delete ui;

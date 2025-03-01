@@ -76,7 +76,15 @@ void Widget::initPlayer()
 	connect(ui->lineEditSearch, &QLineEdit::returnPressed, this, &Widget::on_pushButton_search_clicked);
     // 连接 stateChanged 信号到槽函数
     connect(player, &QMediaPlayer::stateChanged, this, &Widget::updatePlayButtonIcon);
-
+    if (ui->listWidget_onlineSearch->count() == 0)
+    {
+        UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
+        // 连接信号和槽
+        Playlist tempPlaylist; // 创建一个自动变量而不是引用
+        tempPlaylist.setPlaylistId(3778678);
+        usenetwork->parseOnlinePlatListUrl(tempPlaylist);
+        connect(usenetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+    }
 }
 
 void Widget::mousePressEvent(QMouseEvent* e)
@@ -153,6 +161,10 @@ void Widget::updateUI(Music music)
                 }
                 //Will you lay me down ? \r\n
                 ui->lyricsListWidget->addItem(liric);
+            }
+            if (lirics.isEmpty())
+            {
+                ui->lyricsListWidget->addItem("暂无歌词");
             }
             //ui->lyricsListWidget->addItem(liric);
         });
@@ -329,6 +341,45 @@ void Widget::updatePlayListWidget(const QList<Playlist>& playlist)
         ui->listWidget_onlinePlayListSearch->addItem(item);
         ui->listWidget_onlinePlayListSearch->setItemWidget(item, showPlayListItem);
     }
+
+}
+
+void Widget::updatePlayListMuiscWidget(const QList<Music>& musicList)
+{
+    ui->listWidget_playlist_music->clear(); // 清空列表
+
+    // 输出解析结果
+    qDebug() << "Parsed Music List:";
+
+    for (const Music& music : musicList)
+    {
+        qDebug() << "ID:" << music.id();
+        qDebug() << "Music ID:" << music.musicId();
+        qDebug() << "Name:" << music.name();
+        qDebug() << "Author:" << music.author();
+        qDebug() << "Album:" << music.album();
+        qDebug() << "URL:" << music.url();
+        qDebug() << "Pic URL:" << music.picurl();
+        qDebug() << "Duration:" << music.duration();
+        qDebug() << "-----------------------------";
+    }
+
+    for (const Music& music : musicList)
+    {
+        ShowItem* showItem = new ShowItem();
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidget_playlist_music);
+
+        // 设置 QListWidgetItem 的大小
+        item->setSizeHint(showItem->sizeHint());
+
+        showItem->initPlayListMusicShowItem(music);
+
+        // 将 ShowItem 添加到 QListWidget
+        ui->listWidget_playlist_music->addItem(item);
+        ui->listWidget_playlist_music->setItemWidget(item, showItem);
+    }
+
+    m_networkMusicList = musicList;
 
 }
 
@@ -729,5 +780,47 @@ void Widget::on_radioButton_music_toggled(bool checked)
 void Widget::on_radioButton_playlist_toggled(bool checked)
 {
     qDebug()<<"======================playlist"<<checked;
+}
+
+
+void Widget::on_listWidget_onlinePlayListSearch_itemDoubleClicked(QListWidgetItem *item)
+{
+    ShowPlayListItem* showPlayListItem = qobject_cast<ShowPlayListItem*>(ui->listWidget_onlinePlayListSearch->itemWidget(item));
+    Playlist playlist = showPlayListItem->getPlaylist();
+
+    UseNetwork* useNetwork = new UseNetwork(this);
+    useNetwork->parseOnlinePlatListUrl(playlist);
+    connect(useNetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updatePlayListMuiscWidget);
+}
+
+void Widget::on_listWidget_playlist_music_itemDoubleClicked(QListWidgetItem* item)
+{
+    ShowItem* showItem = qobject_cast<ShowItem*>(ui->listWidget_playlist_music->itemWidget(item));
+    Music music = showItem->getMusic();
+    UseNetwork* useNetwork = new UseNetwork(this);
+
+    QMediaPlaylist* playList = player->playlist();
+    bool needUpdate = (playList != m_NetworkPlaylist) || m_networkMusicList[0].url().isEmpty();
+
+    if (needUpdate)
+    {
+        player->stop();
+        useNetwork->parseOnlineUrlForList(m_networkMusicList);
+        disconnect(this, &Widget::updateNetworkMusicListFinished, nullptr, nullptr);
+        connect(useNetwork, &UseNetwork::onlineUrlForListReady, this, &Widget::updateNetworkMusicList);
+        connect(this, &Widget::updateNetworkMusicListFinished, this, [=]()
+            {
+                m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+                player->play();
+            });
+    }
+    else
+    {
+        m_NetworkPlaylist->setCurrentIndex(music.id() - 1);
+        player->play();
+    }
+
+    updateUI(music);
+
 }
 

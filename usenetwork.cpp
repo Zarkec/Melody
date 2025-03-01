@@ -102,6 +102,51 @@ void UseNetwork::readPlayListSearchReply()
     emit searchPlayListFinished(m_playlist);
 }
 
+// 官方的接口，获取歌单详情
+void UseNetwork::readOnlinePlatListReply()
+{
+    QList<Music> playlist_musics;
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply)
+    {
+        return;
+    }
+
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray rawData = reply->readAll();
+    qDebug() << "================readOnlinePlatListReplyRawData===============" << rawData;
+    playlist_musics = parsePlayListMusicsSearchJsonData(rawData);
+    emit searchOnlinePlatListFinished(playlist_musics);
+}
+
+void UseNetwork::readOnlinePlatListReply2()
+{
+    QList<Music> playlist_musics;
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply)
+    {
+        return;
+    }
+
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qDebug() << "Error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray rawData = reply->readAll();
+    qDebug() << "================readOnlinePlatListReplyRawData===============" << rawData;
+    playlist_musics = parsePlayListMusicsSearchJsonData2(rawData);
+    emit searchOnlinePlatListFinished(playlist_musics);
+}
+
 void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -226,6 +271,127 @@ QList<Music> UseNetwork::parseMusicSearchJsonData(QByteArray rawData)
     return musicList;
 }
 
+QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData(QByteArray rawData)
+{
+    QList<Music> musicList;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
+    {
+        QJsonObject jsonObj = jsonDoc.object();
+        if (jsonObj.contains("result") && jsonObj["result"].isObject())
+        {
+            QJsonObject resultObj = jsonObj["result"].toObject();
+            if (resultObj.contains("tracks") && resultObj["tracks"].isArray())
+            {
+                QJsonArray tracksArray = resultObj["tracks"].toArray();
+
+                int counter = 1;
+                for (const QJsonValue& trackValue : tracksArray)
+                {
+                    if (trackValue.isObject())
+                    {
+                        QJsonObject trackObj = trackValue.toObject();
+                        Music music;
+                        if (trackObj.contains("id") && trackObj["id"].isDouble())
+                        {
+                            qint64 MusicId = trackObj["id"].toVariant().toLongLong();
+                            music.setMusicId(MusicId);
+                            music.setId(counter);
+                            counter++;
+                        }
+                        if (trackObj.contains("name") && trackObj["name"].isString())
+                        {
+                            music.setName(trackObj["name"].toString());
+                        }
+                        if (trackObj.contains("duration") && trackObj["duration"].isDouble())
+                        {
+                            music.setDuration(trackObj["duration"].toInt());
+                        }
+                        if (trackObj.contains("album") && trackObj["album"].isObject())
+                        {
+                            QJsonObject albumObj = trackObj["album"].toObject();
+                            if (albumObj.contains("name") && albumObj["name"].isString())
+                            {
+                                music.setAlbum(albumObj["name"].toString());
+                            }
+                            if (albumObj.contains("blurPicUrl") && albumObj["blurPicUrl"].isString())
+                            {
+                                music.setPicurl(albumObj["blurPicUrl"].toString() + "?param=300y300");
+                            }
+                        }
+                        if (trackObj.contains("artists") && trackObj["artists"].isArray())
+                        {
+                            QJsonArray artistsArray = trackObj["artists"].toArray();
+                            if (!artistsArray.isEmpty())
+                            {
+                                QJsonObject artistObj = artistsArray[0].toObject();
+                                if (artistObj.contains("name") && artistObj["name"].isString())
+                                {
+                                    music.setAuthor(artistObj["name"].toString());
+                                }
+                            }
+                        }
+                        musicList.append(music);
+                    }
+                }
+            }
+        }
+    }
+    return musicList;
+}
+
+QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
+{
+    QList<Music> musicList;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
+    {
+        QJsonObject jsonObj = jsonDoc.object();
+        if (jsonObj.contains("results") && jsonObj["results"].isArray())
+        {
+            QJsonArray resultArray = jsonObj["results"].toArray();
+            if (!resultArray.isEmpty()) {
+                QJsonObject resultObj = resultArray[0].toObject();
+                if (resultObj.contains("List") && resultObj["List"].isArray())
+                {
+                    QJsonArray ListArray = resultObj["List"].toArray();
+
+                    int counter = 1;
+                    for (const QJsonValue& ListValue : ListArray)
+                    {
+                        if (ListValue.isObject())
+                        {
+                            QJsonObject ListObj = ListValue.toObject();
+                            Music music;
+                            if (ListObj.contains("rid") && ListObj["rid"].isDouble())
+                            {
+                                qint64 MusicId = ListObj["rid"].toVariant().toLongLong();
+                                music.setMusicId(MusicId);
+                                music.setId(counter);
+                                counter++;
+                            }
+                            if (ListObj.contains("name") && ListObj["name"].isString())
+                            {
+                                music.setName(ListObj["name"].toString());
+                            }
+                            if (ListObj.contains("pic") && ListObj["pic"].isString())
+                            {
+                                music.setPicurl(ListObj["pic"].toString());
+                            }
+                            if (ListObj.contains("artist") && ListObj["artist"].isString())
+                            {
+                                music.setAuthor(ListObj["artist"].toString());
+                            }
+                            musicList.append(music);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return musicList;
+}
+
 QList<Playlist> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
 {
     QList<Playlist> playlistList;
@@ -308,6 +474,21 @@ void UseNetwork::parseOnlineUrl(qint64 musicId)
     });
 }
 
+void UseNetwork::parseOnlinePlatListUrl(Playlist& playlist)
+{
+    // 解析官方的url不稳定
+    //QUrl url("https://music.163.com/api/playlist/detail?id=" + QString::number(playlist.playlistId()));
+    //qDebug() << "===========playlist url" << url;
+    //QNetworkRequest request(url);
+    //QNetworkReply* reply = manager->get(request); // 这里定义 reply
+    //connect(reply, &QNetworkReply::finished, this, &UseNetwork::readOnlinePlatListReply);
+    QUrl url("https://musicbox-web-api.mu-jie.cc/wyylist/?id=" + QString::number(playlist.playlistId()));
+    QNetworkRequest request(url);
+    qDebug() << "===========playlist url" << url;
+    QNetworkReply* reply = manager->get(request); // 这里定义 reply
+    connect(reply, &QNetworkReply::finished, this, &UseNetwork::readOnlinePlatListReply2);
+}
+
 void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
 {
     m_musicList = musicList;
@@ -385,6 +566,10 @@ void UseNetwork::readLiricReply()
             QString liric = jsonObj["lyric"].toString();
             qDebug() << "lyric:" << liric;
             emit lyricsReady(liric);
+        }
+        else {
+            qDebug() << "no lyric";
+            emit lyricsReady("");
         }
     }
 

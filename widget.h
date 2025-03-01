@@ -70,6 +70,8 @@ private slots:
     void on_pushButton_add_clicked();// 添加本地音乐按钮
     void on_radioButton_music_toggled(bool checked);
     void on_radioButton_playlist_toggled(bool checked);
+    void on_listWidget_onlinePlayListSearch_itemDoubleClicked(QListWidgetItem *item);
+    void on_listWidget_playlist_music_itemDoubleClicked(QListWidgetItem *item);
 
 public:
 signals:
@@ -97,7 +99,8 @@ private:
     void switchPage();
     void updateListWidget(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);
-    void updatePlayListWidget(const QList<Playlist>& plalist);
+    void updatePlayListWidget(const QList<Playlist>& playlist);
+    void updatePlayListMuiscWidget(const QList<Music>& musicList);
     void updateRecommendList();
     void changeOnlineUrl(const QString& onlineUrl);
 };

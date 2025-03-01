@@ -24,6 +24,9 @@ public:
     void setPlayListPic(QString musicPicUrl);
     void networkReplyFinish(QNetworkReply* reply, QLabel* label);
     void setImageFromUrl(const QString& url, QLabel* label);
+
+    Playlist getPlaylist() const;
+
     ~ShowPlayListItem();
 
 private:

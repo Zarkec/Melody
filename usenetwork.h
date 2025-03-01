@@ -25,8 +25,11 @@ class UseNetwork : public QObject
 public:
     UseNetwork(QObject* parent = nullptr);
     QList<Music> parseMusicSearchJsonData(QByteArray rawData);
+    QList<Music> parsePlayListMusicsSearchJsonData(QByteArray rawData);
+    QList<Music> parsePlayListMusicsSearchJsonData2(QByteArray rawData);
     QList<Playlist> parsePlayListSearchJsonData(QByteArray rawData);
     void parseOnlineUrl(qint64 musicId);
+    void parseOnlinePlatListUrl(Playlist& playlist);
     void parseOnlineUrlForList(QList<Music>& musicList);
     void getLiricByMusicId(qint64 musicId);
     ~UseNetwork();
@@ -36,6 +39,7 @@ public slots:
 signals:
     void searchMusicFinished(const QList<Music>& musicList); // 信号：搜索完成时发出
     void searchPlayListFinished(const QList<Playlist>& playListList); // 信号：搜索完成时发出
+    void searchOnlinePlatListFinished(const QList<Music>& musicList);
     // 信号：请求完成后发送在线 URL
     void onlineUrlReady(const QString& onlineUrl);
     void onlineUrlForListReady(const QList<Music>& musicList);
@@ -44,6 +48,8 @@ signals:
 private slots:
     void readMusicSearchReply();
     void readPlayListSearchReply();
+    void readOnlinePlatListReply();
+    void readOnlinePlatListReply2();
     void readPicUrlReply(QNetworkReply* reply, Music* music);
     void readLiricReply();
 
