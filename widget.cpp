@@ -95,33 +95,154 @@ void Widget::initPlayer()
 	connect(ui->lineEditSearch, &QLineEdit::returnPressed, this, &Widget::on_pushButton_search_clicked);
     // 连接 stateChanged 信号到槽函数
     connect(player, &QMediaPlayer::stateChanged, this, &Widget::updatePlayButtonIcon);
-    if (ui->listWidget_onlineSearch->count() == 0)
-    {
-        //UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
-        //// 连接信号和槽
-        //Playlist tempPlaylist; // 创建一个自动变量而不是引用
-        //tempPlaylist.setPlaylistId(3778678);
-        //usenetwork->parseOnlinePlatListUrl(tempPlaylist);
-        //connect(usenetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
-        QThread* thread = new QThread(this);
-        UseNetwork* worker = new UseNetwork(thread);
-        Playlist tempPlaylist; // 创建一个自动变量而不是引用
-        tempPlaylist.setPlaylistId(3778678);
+    initTopPage();
+    QString styleSheet = "QScrollBar:vertical{ "
+        "    width:8px;  "
+        "    border-style:flat;"
+        "    border-radius: 4px;"
+        "    border:0px;"
+        "     background: #19191A;"
+        "} "
+        "QScrollBar::handle:vertical{ "
+        "    background: rgba(255,255,255,0.50);"
+        "    border-radius: 4px;"
+        "    width:8px; "
+        "    min-height:91px; "
+        "    border-style:flat;"
+        "}"
+        "QScrollBar::handle:vertical::hover{ "
+        "    background: rgba(255,255,255,0.90);"
+        "    border-radius: 4px;"
+        "    width:8px; "
+        "}"
+        "QScrollBar::handle:vertical::pressed{ "
+        "    background: rgba(255,255,255,0.90);"
+        "    border-radius:4px;"
+        "    width:8px; "
+        "}"
+        "QScrollBar::sub-page:vertical {"
+        "    background: #19191A;"
+        "border-style:flat;"
+        "}"
+        "QScrollBar::add-page:vertical {"
+        "   background: #19191A;"
+        "border-style:flat;"
+        "}"
+        "QScrollBar::add-line:vertical{"
+        "   background: #19191A;"
+        "}"
+        "QScrollBar::sub-line:vertical {"
+        "   background: #19191A;"
+        "}"
+        "QScrollBar:horizontal{ "
+        "    height:8px;  "
+        "    border-style:flat;"
+        "    border-radius: 4px;"
+        "    border:0px;"
+        "background: #19191A;"
+        "} "
+        "QScrollBar::handle:horizontal{ "
+        "    background: rgba(255,255,255,0.50);"
+        "    border-radius: 4px;"
+        "    height:8px; "
+        "    min-width:91px; "
+        "    border-style:flat;"
+        "}"
+        "QScrollBar::handle:horizontal::hover{ "
+        "    background: rgba(255,255,255,0.90);"
+        "    border-radius: 4px;"
+        "    height:8px; "
+        "}"
+        "QScrollBar::handle:horizontal::pressed{ "
+        "    background: rgba(255,255,255,0.90);"
+        "    border-radius:4px;"
+        "    height:8px; "
+        "}"
+        "QScrollBar::sub-page:horizontal {"
+        "    background: #19191A;"
+        "    border-style:flat;"
+        "}"
+        "QScrollBar::add-page:horizontal {"
+        "   background: #19191A;"
+        "    border-style:flat;"
+        "}"
+        "QScrollBar::sub-line:horizontal {"
+        "   background: #19191A;"
+        "}"
+        "QScrollBar::add-line:horizontal{"
+        "   background: #19191A;"
+        "}";
 
-        worker->moveToThread(thread);
+    ui->lyricsListWidget->setStyleSheet(styleSheet);
+    //if (ui->listWidget_onlineSearch->count() == 0)
+    //{
+    //    //UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
+    //    //// 连接信号和槽
+    //    //Playlist tempPlaylist; // 创建一个自动变量而不是引用
+    //    //tempPlaylist.setPlaylistId(3778678);
+    //    //usenetwork->parseOnlinePlatListUrl(tempPlaylist);
+    //    //connect(usenetwork, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+    //    QThread* thread = new QThread(this);
+    //    UseNetwork* worker = new UseNetwork(thread);
+    //    Playlist tempPlaylist; // 创建一个自动变量而不是引用
+    //    tempPlaylist.setPlaylistId(3778678);
 
-        connect(thread, &QThread::started, worker, [worker, tempPlaylist]() {
-            worker->parseOnlinePlatListUrl(tempPlaylist);
-            });
-        connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
-        connect(worker, &UseNetwork::searchOnlinePlatListFinished, thread, &QThread::quit);
-        connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-        connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+    //    worker->moveToThread(thread);
 
-        thread->start();
-        qDebug() << "Thread started:" << thread->isRunning();
-    }
+    //    connect(thread, &QThread::started, worker, [worker, tempPlaylist]() {
+    //        worker->parseOnlinePlatListUrl(tempPlaylist);
+    //        });
+    //    connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidget);
+    //    connect(worker, &UseNetwork::searchOnlinePlatListFinished, thread, &QThread::quit);
+    //    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    //    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+
+    //    thread->start();
+    //    qDebug() << "Thread started:" << thread->isRunning();
+    //}
 }
+
+void Widget::initTopPage()
+{
+    ui->stackedWidget_search->setCurrentIndex(2);
+    updateTop(ui->listWidget_new, 3779629);
+    updateTop(ui->listWidget_hot, 3778678);
+    updateTop(ui->listWidget_soar, 19723756);
+}
+
+void Widget::updateTop(QListWidget* topList, int playListID)
+{
+    QThread* thread = new QThread(this);
+    UseNetwork* worker = new UseNetwork(thread);
+    Playlist tempPlaylist; // 创建一个自动变量而不是引用
+    tempPlaylist.setPlaylistId(playListID);
+
+    worker->moveToThread(thread);
+
+    connect(thread, &QThread::started, worker, [worker, tempPlaylist]() {
+        worker->parseOnlinePlatListUrl(tempPlaylist);
+        });
+    if (topList == ui->listWidget_new)
+    {
+        connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidgetNew);
+    }
+    else if (topList == ui->listWidget_hot)
+    {
+        connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidgetHot);
+    }
+    else if (topList == ui->listWidget_soar)
+    {
+        connect(worker, &UseNetwork::searchOnlinePlatListFinished, this, &Widget::updateListWidgetSoar);
+    }
+    connect(worker, &UseNetwork::searchOnlinePlatListFinished, thread, &QThread::quit);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+
+    thread->start();
+    qDebug() << "Thread started:" << thread->isRunning();
+}
+
+
 
 void Widget::mousePressEvent(QMouseEvent* e)
 {
@@ -299,8 +420,43 @@ void Widget::switchPage()
 
 }
 
+void Widget::updateListWidget(const QList<Music>& musicList, QListWidget* listWidget)
+{
+    listWidget->clear(); // 清空列表
+
+    // 使用智能指针自动管理临时对象
+    m_networkMusicList = musicList;
+
+    // 先批量创建所有 QListWidgetItem（主线程必须操作）
+    QList<QPair<QListWidgetItem*, ShowPlayListMusicItem*>> items;
+    for (const auto& music : musicList) {
+        QListWidgetItem* item = new QListWidgetItem(listWidget);
+        ShowPlayListMusicItem* showplaylistmusicitem = new ShowPlayListMusicItem(listWidget); // 指定父对象自动释放
+        item->setSizeHint(showplaylistmusicitem->sizeHint());
+        items.append(qMakePair(item, showplaylistmusicitem));
+    }
+
+    // 批量添加项（减少布局计算次数）
+    listWidget->setUpdatesEnabled(false);
+    for (const auto& pair : items) {
+        listWidget->addItem(pair.first);
+        listWidget->setItemWidget(pair.first, pair.second);
+    }
+    listWidget->setUpdatesEnabled(true);
+
+    // 异步初始化内容（通过线程池）
+    QtConcurrent::run([this, items, musicList]() {
+        for (int i = 0; i < items.size(); ++i) {
+            QMetaObject::invokeMethod(items[i].second, [=]() {
+                //items[i].second->initTopListShowItem(musicList[i]);
+                items[i].second->initPlayListMusicItem(musicList[i]);
+                }, Qt::QueuedConnection);
+        }
+        });
+}
+
 //更新搜索的item
-void Widget::updateListWidget(const QList<Music>& musicList)
+void Widget::updateSearchListWidget(const QList<Music>& musicList)
 {
     ui->stackedWidget_search->setCurrentIndex(0);
     ui->listWidget_onlineSearch->clear();
@@ -333,6 +489,21 @@ void Widget::updateListWidget(const QList<Music>& musicList)
                 }, Qt::QueuedConnection);
         }
         });
+}
+
+void Widget::updateListWidgetNew(const QList<Music>& musicList)
+{
+    updateListWidget(musicList, ui->listWidget_new);
+}
+
+void Widget::updateListWidgetHot(const QList<Music>& musicList)
+{
+    updateListWidget(musicList, ui->listWidget_hot);
+}
+
+void Widget::updateListWidgetSoar(const QList<Music>& musicList)
+{
+    updateListWidget(musicList, ui->listWidget_soar);
 }
 
 //更新搜索的歌单
@@ -374,17 +545,17 @@ void Widget::updatePlayListMuiscWidget(const QList<Music>& musicList)
 
     for (const Music& music : musicList)
     {
-        ShowItem* showItem = new ShowItem(ui->listWidget_playlist_music);
+        ShowPlayListMusicItem* showplaylistmusicitem = new ShowPlayListMusicItem(ui->listWidget_playlist_music);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget_playlist_music);
 
         // 设置 QListWidgetItem 的大小
-        item->setSizeHint(showItem->sizeHint());
+        item->setSizeHint(showplaylistmusicitem->sizeHint());
 
-        showItem->initPlayListMusicShowItem(music);
+        showplaylistmusicitem->initPlayListMusicItem(music);
 
         // 将 ShowItem 添加到 QListWidget
         ui->listWidget_playlist_music->addItem(item);
-        ui->listWidget_playlist_music->setItemWidget(item, showItem);
+        ui->listWidget_playlist_music->setItemWidget(item, showplaylistmusicitem);
     }
 
     m_networkMusicList = musicList;
@@ -453,7 +624,7 @@ void Widget::setImageFromUrl(const QString& url, QLabel* label)
     });
 
     // 发起网络请求
-    QNetworkRequest request(url);
+    QNetworkRequest request(url + "?param=300y300");
     manager->get(request);
 }
 
@@ -611,6 +782,10 @@ void Widget::on_pushButton_search_clicked()
         searchType = "1";
     }
     QString search = ui->lineEditSearch->text();
+    if (search.isEmpty())
+    {
+        return;
+    }
     qDebug() << "search:" << search;
     //存储搜索历史
     UseMySQL* useMySQL = new UseMySQL();
@@ -618,9 +793,8 @@ void Widget::on_pushButton_search_clicked()
     UseNetwork* usenetwork = new UseNetwork(this); // 使用堆内存分配
     // 连接信号和槽
     usenetwork->searchOnline(search, searchType);
-    connect(usenetwork, &UseNetwork::searchMusicFinished, this, &Widget::updateListWidget);
+    connect(usenetwork, &UseNetwork::searchMusicFinished, this, &Widget::updateSearchListWidget);
     connect(usenetwork, &UseNetwork::searchPlayListFinished, this, &Widget::updatePlayListWidget);
-
 }
 
 //上一曲
@@ -796,8 +970,8 @@ void Widget::on_listWidget_onlinePlayListSearch_itemDoubleClicked(QListWidgetIte
 
 void Widget::on_listWidget_playlist_music_itemDoubleClicked(QListWidgetItem* item)
 {
-    ShowItem* showItem = qobject_cast<ShowItem*>(ui->listWidget_playlist_music->itemWidget(item));
-    Music music = showItem->getMusic();
+    ShowPlayListMusicItem* showplaylistmusicitem = qobject_cast<ShowPlayListMusicItem*>(ui->listWidget_playlist_music->itemWidget(item));
+    Music music = showplaylistmusicitem->getMusic();
     UseNetwork* useNetwork = new UseNetwork(this);
 
     QMediaPlaylist* playList = player->playlist();

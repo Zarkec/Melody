@@ -26,12 +26,14 @@ public:
     ~ShowItem();
     void initLocalShowItem(const Music& music);
     void initNetworkShowItem(const Music& music);
+    void initTopListShowItem(const Music& music);
     void initPlayListShowItem(const Playlist& playlist);
     void initPlayListMusicShowItem(const Music& music);
     void setMusicId(QString musicId);
     void setMusicName(QString musicName);
     void setMusicAuthor(QString musicAuthor);
     void setMusicPic(QString musicPicUrl);
+    void networkReplyFinish(QNetworkReply* reply, QLabel* label);
     void setImageFromUrl(const QString& url, QLabel* label);
 
     Music getMusic();

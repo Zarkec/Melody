@@ -57,7 +57,31 @@ void ShowItem::initNetworkShowItem(const Music& music)
     ui->label_addtime->setVisible(false);
     //设置时长
     ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
-    setMusicPic(music.picurl());
+    setMusicPic(music.picurl() + "?param=50y50");
+}
+
+void ShowItem::initTopListShowItem(const Music& music)
+{
+    //保存music类
+    m_music = music;
+    //设置id
+    ui->label_musicid->setText(QString::number(music.id()));
+    //设置歌名
+    ui->label_musicname->setText(music.name());
+    //设置歌手
+    ui->label_author->setText(music.author());
+    //设置专辑
+    ui->label_album->setText(music.album());
+    //设置添加时间不显示
+    ui->label_addtime->setVisible(false);
+    ui->horizontalSpacer->changeSize(0, 0);
+    ui->horizontalSpacer_2->changeSize(0, 0);
+    ui->horizontalSpacer_3->changeSize(0, 0);
+    ui->horizontalSpacer_4->changeSize(0, 0);
+    //设置时长
+    //ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
+    ui->label_duration->setVisible(false);
+    setMusicPic(music.picurl() + "?param=50y50");
 }
 
 void ShowItem::initPlayListMusicShowItem(const Music& music)
@@ -74,11 +98,15 @@ void ShowItem::initPlayListMusicShowItem(const Music& music)
     ui->label_album->setText(music.album());
     //设置添加时间不显示
     ui->label_addtime->setVisible(false);
+    ui->horizontalSpacer->changeSize(0, 0);
+    ui->horizontalSpacer_2->changeSize(0, 0);
+    ui->horizontalSpacer_3->changeSize(0, 0);
+    ui->horizontalSpacer_4->changeSize(0, 0);
     //设置时长
-    ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
+    //ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
     ui->label_duration->setVisible(false);
-    ui->label_pic->setVisible(false);
-    //setMusicPic(music.picurl());
+    //ui->label_pic->setVisible(false);
+    setMusicPic(music.picurl() + "?param=50y50");
 }
 
 void ShowItem::initPlayListShowItem(const Playlist& playlist)
@@ -122,7 +150,7 @@ void ShowItem::setMusicPic(QString musicPicUrl)
 
 }
 
-void networkReplyFinish(QNetworkReply* reply, QLabel* label)
+void ShowItem::networkReplyFinish(QNetworkReply* reply, QLabel* label)
 {
     if (reply->error())
     {

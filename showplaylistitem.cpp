@@ -15,7 +15,7 @@ void ShowPlayListItem::initPlayListShowItem(const Playlist& playlist)
     ui->label_id->setVisible(false);
     ui->label_playlistname->setText(playlist.name());
     //ui->label_pic->setVisible(false);
-    setPlayListPic(playlist.picurl());
+    setPlayListPic(playlist.picurl()+ +"?param=300y300");
 }
 
 

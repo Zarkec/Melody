@@ -28,7 +28,7 @@ void UseNetwork::searchOnline(const QString& search,QString searchType)
     //单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002) 
     query.addQueryItem("type", searchType);
     query.addQueryItem("offset", "0");
-    query.addQueryItem("limit", "35");
+    query.addQueryItem("limit", "50");
     url.setQuery(query);
 
     qDebug() << "search url" << url;
@@ -175,7 +175,7 @@ void UseNetwork::readPicUrlReply(QNetworkReply* reply, Music* music)
                         QJsonObject albumObj = songObj["album"].toObject();
                         //qDebug() << "blurPicUrl" << albumObj["blurPicUrl"].toString() + "?param=300y300";
                         //设置为小图300*300
-                        music->setPicurl(albumObj["blurPicUrl"].toString() + "?param=300y300");
+                        music->setPicurl(albumObj["blurPicUrl"].toString());
                     }
                 }
             }
@@ -316,7 +316,7 @@ QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData(QByteArray rawData)
                             }
                             if (albumObj.contains("blurPicUrl") && albumObj["blurPicUrl"].isString())
                             {
-                                music.setPicurl(albumObj["blurPicUrl"].toString() + "?param=300y300");
+                                music.setPicurl(albumObj["blurPicUrl"].toString());
                             }
                         }
                         if (trackObj.contains("artists") && trackObj["artists"].isArray())
@@ -340,129 +340,132 @@ QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData(QByteArray rawData)
     return musicList;
 }
 
-//QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
-//{
-//    QList<Music> musicList;
-//    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
-//    if (!jsonDoc.isNull() && jsonDoc.isObject())
-//    {
-//        QJsonObject jsonObj = jsonDoc.object();
-//        if (jsonObj.contains("results") && jsonObj["results"].isArray())
-//        {
-//            QJsonArray resultArray = jsonObj["results"].toArray();
-//            if (!resultArray.isEmpty()) {
-//                QJsonObject resultObj = resultArray[0].toObject();
-//                if (resultObj.contains("List") && resultObj["List"].isArray())
-//                {
-//                    QJsonArray ListArray = resultObj["List"].toArray();
-//
-//                    int counter = 1;
-//                    for (const QJsonValue& ListValue : ListArray)
-//                    {
-//                        if (ListValue.isObject())
-//                        {
-//                            QJsonObject ListObj = ListValue.toObject();
-//                            Music music;
-//                            if (ListObj.contains("rid") && ListObj["rid"].isDouble())
-//                            {
-//                                qint64 MusicId = ListObj["rid"].toVariant().toLongLong();
-//                                music.setMusicId(MusicId);
-//                                music.setId(counter);
-//                                counter++;
-//                            }
-//                            if (ListObj.contains("name") && ListObj["name"].isString())
-//                            {
-//                                music.setName(ListObj["name"].toString());
-//                            }
-//                            if (ListObj.contains("pic") && ListObj["pic"].isString())
-//                            {
-//                                music.setPicurl(ListObj["pic"].toString());
-//                            }
-//                            if (ListObj.contains("artist") && ListObj["artist"].isString())
-//                            {
-//                                music.setAuthor(ListObj["artist"].toString());
-//                            }
-//                            musicList.append(music);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    return musicList;
-//}
-
-QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData) 
+QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
 {
     QList<Music> musicList;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
-    if (jsonDoc.isNull() || !jsonDoc.isObject()) 
-        return musicList;
+    if (!jsonDoc.isNull() && jsonDoc.isObject())
+    {
+        QJsonObject jsonObj = jsonDoc.object();
+        if (jsonObj.contains("results") && jsonObj["results"].isArray())
+        {
+            QJsonArray resultArray = jsonObj["results"].toArray();
+            if (!resultArray.isEmpty()) {
+                QJsonObject resultObj = resultArray[0].toObject();
+                if (resultObj.contains("List") && resultObj["List"].isArray())
+                {
+                    QJsonArray ListArray = resultObj["List"].toArray();
 
-    QJsonObject jsonObj = jsonDoc.object();
-    if (!jsonObj.contains("results") || !jsonObj["results"].isArray())
-        return musicList;
-
-    QJsonArray resultArray = jsonObj["results"].toArray();
-    if (resultArray.isEmpty())
-        return musicList;
-
-    QJsonObject resultObj = resultArray[0].toObject();
-    if (!resultObj.contains("List") || !resultObj["List"].isArray())
-        return musicList;
-
-    QJsonArray listArray = resultObj["List"].toArray();
-
-    //只加载100首歌曲
-    // 只加载100首歌曲
-    //if (listArray.size() > 50) {
-    //    //listArray = listArray.mid(0, 100);
-
-    //    // 使用以下代码
-    //    QJsonArray limitedListArray;
-    //    for (int i = 0; i < listArray.size() && i < 50; ++i) {
-    //        limitedListArray.append(listArray[i]);
-    //    }
-    //    listArray = limitedListArray;
-    //}
-    // 预分配内存（减少动态扩容开销）
-    musicList.reserve(listArray.size());
-
-    // 并行处理核心逻辑
-    QFutureSynchronizer<void> synchronizer;
-    QMutex listMutex; // 用于线程安全操作musicList
-    std::atomic<int> counter(1); // 原子操作的计数器
-
-    QtConcurrent::blockingMap(listArray, [&](const QJsonValue& listValue) {
-        if (!listValue.isObject()) return;
-
-        QJsonObject listObj = listValue.toObject();
-        Music music;
-
-        // 原子操作保证计数唯一性
-        int currentId = counter.fetch_add(1, std::memory_order_relaxed);
-        music.setId(currentId);
-
-        if (listObj.contains("rid") && listObj["rid"].isDouble()) {
-            music.setMusicId(listObj["rid"].toVariant().toLongLong());
+                    int counter = 1;
+                    for (const QJsonValue& ListValue : ListArray)
+                    {
+                        if (ListValue.isObject())
+                        {
+                            QJsonObject ListObj = ListValue.toObject();
+                            Music music;
+                            if (ListObj.contains("rid") && ListObj["rid"].isDouble())
+                            {
+                                qint64 MusicId = ListObj["rid"].toVariant().toLongLong();
+                                music.setMusicId(MusicId);
+                                music.setId(counter);
+                                counter++;
+                            }
+                            if (ListObj.contains("name") && ListObj["name"].isString())
+                            {
+                                music.setName(ListObj["name"].toString());
+                            }
+                            if (ListObj.contains("pic") && ListObj["pic"].isString())
+                            {
+                                //"pic": "https://p2.music.126.net/cmoE8PsdK_Yn9VJ8ZVCGrw==/109951170507596121.jpg?param=300y300"
+                                QString originalUrl = ListObj["pic"].toString();
+                                QString Url = originalUrl.left(originalUrl.indexOf('?'));
+                                music.setPicurl(Url);
+                            }
+                            if (ListObj.contains("artist") && ListObj["artist"].isString())
+                            {
+                                music.setAuthor(ListObj["artist"].toString());
+                            }
+                            musicList.append(music);
+                        }
+                    }
+                }
+            }
         }
-        if (listObj.contains("name") && listObj["name"].isString()) {
-            music.setName(listObj["name"].toString());
-        }
-        if (listObj.contains("pic") && listObj["pic"].isString()) {
-            music.setPicurl(listObj["pic"].toString());
-        }
-        if (listObj.contains("artist") && listObj["artist"].isString()) {
-            music.setAuthor(listObj["artist"].toString());
-        }
-
-        // 线程安全的列表追加
-        QMutexLocker locker(&listMutex);
-        musicList.append(music);
-    });
-
+    }
     return musicList;
 }
+
+//QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData) 
+//{
+//    QList<Music> musicList;
+//    QJsonDocument jsonDoc = QJsonDocument::fromJson(rawData);
+//    if (jsonDoc.isNull() || !jsonDoc.isObject()) 
+//        return musicList;
+//
+//    QJsonObject jsonObj = jsonDoc.object();
+//    if (!jsonObj.contains("results") || !jsonObj["results"].isArray())
+//        return musicList;
+//
+//    QJsonArray resultArray = jsonObj["results"].toArray();
+//    if (resultArray.isEmpty())
+//        return musicList;
+//
+//    QJsonObject resultObj = resultArray[0].toObject();
+//    if (!resultObj.contains("List") || !resultObj["List"].isArray())
+//        return musicList;
+//
+//    QJsonArray listArray = resultObj["List"].toArray();
+//
+//    //只加载100首歌曲
+//    // 只加载100首歌曲
+//    //if (listArray.size() > 50) {
+//    //    //listArray = listArray.mid(0, 100);
+//
+//    //    // 使用以下代码
+//    //    QJsonArray limitedListArray;
+//    //    for (int i = 0; i < listArray.size() && i < 50; ++i) {
+//    //        limitedListArray.append(listArray[i]);
+//    //    }
+//    //    listArray = limitedListArray;
+//    //}
+//    // 预分配内存（减少动态扩容开销）
+//    musicList.reserve(listArray.size());
+//
+//    // 并行处理核心逻辑
+//    QFutureSynchronizer<void> synchronizer;
+//    QMutex listMutex; // 用于线程安全操作musicList
+//    std::atomic<int> counter(1); // 原子操作的计数器
+//
+//    QtConcurrent::blockingMap(listArray, [&](const QJsonValue& listValue) {
+//        if (!listValue.isObject()) return;
+//
+//        QJsonObject listObj = listValue.toObject();
+//        Music music;
+//
+//        // 原子操作保证计数唯一性
+//        int currentId = counter.fetch_add(1, std::memory_order_relaxed);
+//        music.setId(currentId);
+//
+//        if (listObj.contains("rid") && listObj["rid"].isDouble()) {
+//            music.setMusicId(listObj["rid"].toVariant().toLongLong());
+//        }
+//        if (listObj.contains("name") && listObj["name"].isString()) {
+//            music.setName(listObj["name"].toString());
+//        }
+//        if (listObj.contains("pic") && listObj["pic"].isString()) {
+//            music.setPicurl(listObj["pic"].toString());
+//        }
+//        if (listObj.contains("artist") && listObj["artist"].isString()) {
+//            music.setAuthor(listObj["artist"].toString());
+//        }
+//
+//        // 线程安全的列表追加
+//        QMutexLocker locker(&listMutex);
+//        musicList.append(music);
+//    });
+//
+//    return musicList;
+//}
 
 QList<Playlist> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
 {
@@ -501,7 +504,7 @@ QList<Playlist> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
                         }
                         if (playlistObj.contains("coverImgUrl") && playlistObj["coverImgUrl"].isString())
                         {
-                            playlist.setPicurl(playlistObj["coverImgUrl"].toString() + "?param=300y300");
+                            playlist.setPicurl(playlistObj["coverImgUrl"].toString());
                         }
 
                         playlistList.append(playlist);

@@ -420,12 +420,92 @@ QRadioButton::indicator:checked {
                     <item>
                      <widget class="QStackedWidget" name="stackedWidget_search">
                       <property name="currentIndex">
-                       <number>1</number>
+                       <number>0</number>
                       </property>
                       <widget class="QWidget" name="page">
                        <layout class="QVBoxLayout" name="verticalLayout_10">
                         <item>
-                         <widget class="QListWidget" name="listWidget_onlineSearch"/>
+                         <widget class="QListWidget" name="listWidget_onlineSearch">
+                          <property name="styleSheet">
+                           <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                          </property>
+                         </widget>
                         </item>
                        </layout>
                       </widget>
@@ -436,9 +516,488 @@ QRadioButton::indicator:checked {
                           <property name="orientation">
                            <enum>Qt::Orientation::Horizontal</enum>
                           </property>
-                          <widget class="QListWidget" name="listWidget_onlinePlayListSearch"/>
-                          <widget class="QListWidget" name="listWidget_playlist_music"/>
+                          <widget class="QListWidget" name="listWidget_onlinePlayListSearch">
+                           <property name="styleSheet">
+                            <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                           </property>
+                          </widget>
+                          <widget class="QListWidget" name="listWidget_playlist_music">
+                           <property name="styleSheet">
+                            <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                           </property>
+                          </widget>
                          </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                      <widget class="QWidget" name="page_3">
+                       <layout class="QHBoxLayout" name="horizontalLayout_13">
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_11">
+                          <item>
+                           <widget class="QLabel" name="label_2">
+                            <property name="font">
+                             <font>
+                              <family>微软雅黑</family>
+                              <pointsize>13</pointsize>
+                              <italic>true</italic>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>热歌榜</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QListWidget" name="listWidget_hot">
+                            <property name="styleSheet">
+                             <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_12">
+                          <item>
+                           <widget class="QLabel" name="label_4">
+                            <property name="font">
+                             <font>
+                              <family>微软雅黑</family>
+                              <pointsize>13</pointsize>
+                              <italic>true</italic>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>新歌榜</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QListWidget" name="listWidget_new">
+                            <property name="styleSheet">
+                             <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_13">
+                          <item>
+                           <widget class="QLabel" name="label_3">
+                            <property name="font">
+                             <font>
+                              <family>微软雅黑</family>
+                              <pointsize>13</pointsize>
+                              <italic>true</italic>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>飙升榜</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QListWidget" name="listWidget_soar">
+                            <property name="styleSheet">
+                             <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </item>
                        </layout>
                       </widget>
@@ -559,7 +1118,87 @@ QPushButton:pressed {image: url(:/res/img/add0.png);}
                        </layout>
                       </item>
                       <item>
-                       <widget class="ListWidgetLocal" name="listWidgetLocal"/>
+                       <widget class="ListWidgetLocal" name="listWidgetLocal">
+                        <property name="styleSheet">
+                         <string notr="true">QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+</string>
+                        </property>
+                       </widget>
                       </item>
                      </layout>
                     </item>
@@ -1289,15 +1928,16 @@ border-radius: 10px;
             <property name="styleSheet">
              <string notr="true">background-color: rgb(33, 33, 33);
 color: rgb(219, 219, 219);
-border-radius: 10px</string>
+border-radius: 10px;</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <item>
               <widget class="QLabel" name="label_lyrics">
                <property name="font">
                 <font>
-                 <family>微软雅黑</family>
-                 <pointsize>13</pointsize>
+                 <family>Microsoft YaHei UI</family>
+                 <pointsize>14</pointsize>
+                 <italic>false</italic>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1308,8 +1948,20 @@ border-radius: 10px</string>
              </item>
              <item>
               <widget class="QListWidget" name="lyricsListWidget">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
+               </property>
                <property name="styleSheet">
-                <string notr="true">font: 700 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                <string notr="true"/>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
              </item>

@@ -21,6 +21,7 @@
 #include "showitem.h"
 #include "showplaylistitem.h"
 #include "showtableitem.h"
+#include "showplaylistmusicitem.h"
 #include "usenetwork.h"
 
 QT_BEGIN_NAMESPACE
@@ -61,6 +62,8 @@ private slots:
     void on_volumeSlider_valueChanged(int value);//音量条
     void on_pushButton_search_clicked();//设置搜索键按下
     void initPlayer();
+    void initTopPage();
+    void updateTop(QListWidget* topList, int playListID);
     void on_pushButton_Prev_clicked(); //上一曲
     void on_pushButton_Next_clicked();//下一曲
     void on_listWidget_onlineSearch_itemDoubleClicked(QListWidgetItem* item);
@@ -97,7 +100,11 @@ private:
     QNetworkReply* reply;
     void updateUI(Music music);
     void switchPage();
-    void updateListWidget(const QList<Music>& musicList);
+    void updateListWidget(const QList<Music>& musicList, QListWidget* listWidget);
+    void updateSearchListWidget(const QList<Music>& musicList);
+    void updateListWidgetNew(const QList<Music>& musicList);
+    void updateListWidgetHot(const QList<Music>& musicList);
+    void updateListWidgetSoar(const QList<Music>& musicList);
     void updateNetworkMusicList(const QList<Music>& musicList);
     void updatePlayListWidget(const QList<Playlist>& playlist);
     void updatePlayListMuiscWidget(const QList<Music>& musicList);
