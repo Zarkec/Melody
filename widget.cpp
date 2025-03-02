@@ -219,7 +219,7 @@ void Widget::useMysql()
 
     for (const Music& music : musicList)
     {
-        ShowItem* showItem = new ShowItem();
+        ShowItem* showItem = new ShowItem(ui->listWidgetLocal);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
         // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
@@ -252,7 +252,7 @@ void Widget::updateLocalMusicList()
 
     for (const Music& music : musicList)
     {
-        ShowItem* showItem = new ShowItem();
+        ShowItem* showItem = new ShowItem(ui->listWidgetLocal);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLocal);
         // 设置 QListWidgetItem 的大小
         item->setSizeHint(showItem->sizeHint());
@@ -302,27 +302,37 @@ void Widget::switchPage()
 //更新搜索的item
 void Widget::updateListWidget(const QList<Music>& musicList)
 {
-    ui->stackedWidget_search->setCurrentIndex(0); // 切换到搜索页面
-    ui->listWidget_onlineSearch->clear(); // 清空列表
+    ui->stackedWidget_search->setCurrentIndex(0);
+    ui->listWidget_onlineSearch->clear();
 
-    printMusicList(musicList);
+    // 使用智能指针自动管理临时对象
+    m_networkMusicList = musicList;
 
-    for (const Music& music : musicList)
-    {
-        ShowItem* showItem = new ShowItem();
+    // 先批量创建所有 QListWidgetItem（主线程必须操作）
+    QList<QPair<QListWidgetItem*, ShowItem*>> items;
+    for (const auto& music : musicList) {
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlineSearch);
-
-        // 设置 QListWidgetItem 的大小
+        ShowItem* showItem = new ShowItem(ui->listWidget_onlineSearch); // 指定父对象自动释放
         item->setSizeHint(showItem->sizeHint());
-
-        showItem->initNetworkShowItem(music);
-
-        // 将 ShowItem 添加到 QListWidget
-        ui->listWidget_onlineSearch->addItem(item);
-        ui->listWidget_onlineSearch->setItemWidget(item, showItem);
+        items.append(qMakePair(item, showItem));
     }
 
-    m_networkMusicList = musicList;
+    // 批量添加项（减少布局计算次数）
+    ui->listWidget_onlineSearch->setUpdatesEnabled(false);
+    for (const auto& pair : items) {
+        ui->listWidget_onlineSearch->addItem(pair.first);
+        ui->listWidget_onlineSearch->setItemWidget(pair.first, pair.second);
+    }
+    ui->listWidget_onlineSearch->setUpdatesEnabled(true);
+
+    // 异步初始化内容（通过线程池）
+    QtConcurrent::run([this, items, musicList]() {
+        for (int i = 0; i < items.size(); ++i) {
+            QMetaObject::invokeMethod(items[i].second, [=]() {
+                items[i].second->initNetworkShowItem(musicList[i]);
+                }, Qt::QueuedConnection);
+        }
+        });
 }
 
 //更新搜索的歌单
@@ -340,7 +350,7 @@ void Widget::updatePlayListWidget(const QList<Playlist>& playlist)
 
     for (const Playlist& p : playlist)
     {
-        ShowPlayListItem* showPlayListItem = new ShowPlayListItem();
+        ShowPlayListItem* showPlayListItem = new ShowPlayListItem(ui->listWidget_onlinePlayListSearch);
         //ShowItem* showItem = new ShowItem();
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget_onlinePlayListSearch);
 
@@ -364,7 +374,7 @@ void Widget::updatePlayListMuiscWidget(const QList<Music>& musicList)
 
     for (const Music& music : musicList)
     {
-        ShowItem* showItem = new ShowItem();
+        ShowItem* showItem = new ShowItem(ui->listWidget_playlist_music);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidget_playlist_music);
 
         // 设置 QListWidgetItem 的大小

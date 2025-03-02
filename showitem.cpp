@@ -77,7 +77,8 @@ void ShowItem::initPlayListMusicShowItem(const Music& music)
     //设置时长
     ui->label_duration->setText(QString("%1:%2").arg(music.duration() / 1000 / 60, 2, 10, QChar('0')).arg(music.duration() / 1000 % 60, 2, 10, QChar('0')));
     ui->label_duration->setVisible(false);
-    setMusicPic(music.picurl());
+    ui->label_pic->setVisible(false);
+    //setMusicPic(music.picurl());
 }
 
 void ShowItem::initPlayListShowItem(const Playlist& playlist)
@@ -141,7 +142,7 @@ void networkReplyFinish(QNetworkReply* reply, QLabel* label)
 
 void ShowItem::setImageFromUrl(const QString& url, QLabel* label)
 {
-    static QCache<QString, QPixmap> imageCache(1024 * 1024 * 20); // 50MB缓存
+    static QCache<QString, QPixmap> imageCache(1024 * 1024 * 1); // 50MB缓存
 
     if (imageCache.contains(url)) {
         label->setPixmap(*imageCache[url]);

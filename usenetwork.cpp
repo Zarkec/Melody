@@ -413,6 +413,18 @@ QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
 
     QJsonArray listArray = resultObj["List"].toArray();
 
+    //只加载100首歌曲
+    // 只加载100首歌曲
+    //if (listArray.size() > 50) {
+    //    //listArray = listArray.mid(0, 100);
+
+    //    // 使用以下代码
+    //    QJsonArray limitedListArray;
+    //    for (int i = 0; i < listArray.size() && i < 50; ++i) {
+    //        limitedListArray.append(listArray[i]);
+    //    }
+    //    listArray = limitedListArray;
+    //}
     // 预分配内存（减少动态扩容开销）
     musicList.reserve(listArray.size());
 
