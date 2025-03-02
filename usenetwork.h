@@ -15,6 +15,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QVector>
+#include <QDateTime>
 
 #include "music.h"
 #include "playlist.h"

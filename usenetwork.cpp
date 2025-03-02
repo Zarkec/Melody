@@ -524,37 +524,77 @@ QList<Playlist> UseNetwork::parsePlayListSearchJsonData(QByteArray rawData)
     return playlistList;
 }
 
+//void UseNetwork::parseOnlineUrl(qint64 musicId)
+//{
+//    QUrl url("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(musicId));
+//    QNetworkRequest request(url);
+//    qDebug() << "onlineurl" << url;
+//
+//    QNetworkReply* reply = manager->get(request); // 这里定义 reply
+//
+//    // 连接 finished 信号以处理响应
+//    connect(reply, &QNetworkReply::finished, [ = ]()
+//    {
+//        if (reply->error() == QNetworkReply::NoError)
+//        {
+//            // 读取响应数据
+//            QByteArray responseData = reply->readAll();
+//            //qDebug() << "Response:" << responseData;
+//            QString onlineUrl = QString::fromUtf8(responseData);
+//            // 发送信号，传递在线 URL
+//            emit onlineUrlReady(onlineUrl);
+//        }
+//        else
+//        {
+//            // 处理错误
+//            qDebug() << "Error:" << reply->errorString();
+//            // 发送信号，传递在线 URL
+//            emit onlineUrlReady(" ");
+//        }
+//
+//        // 释放资源
+//        reply->deleteLater();
+//    });
+//}
+
 void UseNetwork::parseOnlineUrl(qint64 musicId)
 {
-    QUrl url("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(musicId));
+    //http://110.42.251.190:9888/song/url/v1?id=108463&level=higher&timestamp=1740898842404
+    QUrl url("http://110.42.251.190:9888/song/url/v1");
+    QUrlQuery query;
+    query.addQueryItem("id", QString::number(musicId));
+    query.addQueryItem("level", "higher");
+    qint64 currentTimestamp = QDateTime::currentSecsSinceEpoch();
+    query.addQueryItem("timestamp", QString::number(currentTimestamp));
+    url.setQuery(query);
     QNetworkRequest request(url);
     qDebug() << "onlineurl" << url;
 
     QNetworkReply* reply = manager->get(request); // 这里定义 reply
 
     // 连接 finished 信号以处理响应
-    connect(reply, &QNetworkReply::finished, [ = ]()
-    {
-        if (reply->error() == QNetworkReply::NoError)
+    connect(reply, &QNetworkReply::finished, [=]()
         {
-            // 读取响应数据
-            QByteArray responseData = reply->readAll();
-            //qDebug() << "Response:" << responseData;
-            QString onlineUrl = QString::fromUtf8(responseData);
-            // 发送信号，传递在线 URL
-            emit onlineUrlReady(onlineUrl);
-        }
-        else
-        {
-            // 处理错误
-            qDebug() << "Error:" << reply->errorString();
-            // 发送信号，传递在线 URL
-            emit onlineUrlReady(" ");
-        }
+            if (reply->error() == QNetworkReply::NoError)
+            {
+                // 读取响应数据
+                QByteArray responseData = reply->readAll();
+                qDebug() << "~~~~~~~Response:" << responseData;
+                QString onlineUrl = QString::fromUtf8(responseData);
+                // 发送信号，传递在线 URL
+                emit onlineUrlReady(onlineUrl);
+            }
+            else
+            {
+                // 处理错误
+                qDebug() << "Error:" << reply->errorString();
+                // 发送信号，传递在线 URL
+                emit onlineUrlReady(" ");
+            }
 
-        // 释放资源
-        reply->deleteLater();
-    });
+            // 释放资源
+            reply->deleteLater();
+        });
 }
 
 void UseNetwork::parseOnlinePlatListUrl(Playlist playlist)
@@ -580,9 +620,23 @@ void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
 
     for (Music& music : m_musicList)
     {
+        //http://110.42.251.190:4100/music?id=65766
+        //QUrl url("http://110.42.251.190:9888/song/url/v1");
+        //QUrlQuery query;
+        //query.addQueryItem("id", QString::number(music.musicId()));
+        //query.addQueryItem("level", "higher");
+        //qint64 currentTimestamp = QDateTime::currentSecsSinceEpoch();
+        //query.addQueryItem("timestamp", QString::number(currentTimestamp));
+        //url.setQuery(query);
+        QUrl url("http://110.42.251.190:4100/music");
+        QUrlQuery query;
+        query.addQueryItem("id", QString::number(music.musicId()));
+        url.setQuery(query);
+        //QNetworkRequest request(url);
+        qDebug() << "onlineurl" << url;
         // 发起获取在线URL的请求
-        QUrl onlineUrl("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(music.musicId()));
-        QNetworkRequest onlineRequest(onlineUrl);
+        //QUrl onlineUrl("https://musicbox-web-api.mu-jie.cc/wyy/mp3?rid=" + QString::number(music.musicId()));
+        QNetworkRequest onlineRequest(url);
         QNetworkReply* onlineReply = manager->get(onlineRequest);
         connect(onlineReply, &QNetworkReply::finished, this, [this, onlineReply, &music]()
         {
@@ -593,8 +647,22 @@ void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
             else
             {
                 QByteArray data = onlineReply->readAll();
-                QString onlineUrl = QString::fromUtf8(data);
-                music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
+                qDebug() << "----------------------------data:-------------------------" << data;
+                QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+                if (!jsonDoc.isNull() && jsonDoc.isObject()) {
+                    QJsonObject jsonObj = jsonDoc.object();
+                    if (jsonObj.contains("data") && jsonObj["data"].isObject())
+                    {
+                        QJsonObject dataObj = jsonObj["data"].toObject();
+                        if (dataObj.contains("url") && dataObj["url"].isString())
+                        {
+                            QString onlineUrl = dataObj["url"].toString();
+                            music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
+                        }
+                    }
+                }
+                //QString onlineUrl = QString::fromUtf8(data);
+                //music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
             }
 
             onlineReply->deleteLater();
