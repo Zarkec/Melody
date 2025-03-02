@@ -8,7 +8,9 @@ Widget::Widget(QWidget* parent)
     ui->setupUi(this);
     setWindowTitle("Melody");
     setWindowIcon(QIcon(":/res/img/icon.png"));
-    setAttribute(Qt::WA_TranslucentBackground);//背景透明
+    ui->pushButton_minimize->setVisible(false);
+    ui->pushButton_close->setVisible(false);
+    //setAttribute(Qt::WA_TranslucentBackground);//背景透明
     //setWindowFlags(Qt::FramelessWindowHint);//无边框
 
     mbPressed = false;

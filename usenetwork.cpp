@@ -28,7 +28,7 @@ void UseNetwork::searchOnline(const QString& search,QString searchType)
     //单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002) 
     query.addQueryItem("type", searchType);
     query.addQueryItem("offset", "0");
-    query.addQueryItem("limit", "50");
+    query.addQueryItem("limit", "20");
     url.setQuery(query);
 
     qDebug() << "search url" << url;
@@ -357,6 +357,14 @@ QList<Music> UseNetwork::parsePlayListMusicsSearchJsonData2(QByteArray rawData)
                     QJsonArray ListArray = resultObj["List"].toArray();
 
                     int counter = 1;
+                    //只加载100首歌曲
+                    if (ListArray.size() > 20) {
+                          QJsonArray limitedListArray;
+                          for (int i = 0; i < ListArray.size() && i < 20; ++i) {
+                              limitedListArray.append(ListArray[i]);
+                           }
+                          ListArray = limitedListArray;
+                    }
                     for (const QJsonValue& ListValue : ListArray)
                     {
                         if (ListValue.isObject())
