@@ -621,17 +621,19 @@ void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
     for (Music& music : m_musicList)
     {
         //http://110.42.251.190:4100/music?id=65766
-        //QUrl url("http://110.42.251.190:9888/song/url/v1");
-        //QUrlQuery query;
-        //query.addQueryItem("id", QString::number(music.musicId()));
-        //query.addQueryItem("level", "higher");
-        //qint64 currentTimestamp = QDateTime::currentSecsSinceEpoch();
-        //query.addQueryItem("timestamp", QString::number(currentTimestamp));
-        //url.setQuery(query);
-        QUrl url("http://110.42.251.190:4100/music");
+        QUrl url("http://110.42.251.190:9888/song/url/v1");
         QUrlQuery query;
         query.addQueryItem("id", QString::number(music.musicId()));
+        query.addQueryItem("level", "higher");
+        qint64 currentTimestamp = QDateTime::currentSecsSinceEpoch();
+        query.addQueryItem("timestamp", QString::number(currentTimestamp));
         url.setQuery(query);
+        //添加cookie
+        QNetworkCookie cookie;
+        cookie.setName("NMTID");
+        cookie.setValue("00OkLJle6k92cLjJULniq0TeaOjz3sAAAGVV5JX4A");
+        manager->cookieJar()->insertCookie(cookie);
+        //manager->setCookieJar(manager->cookieJar());
         //QNetworkRequest request(url);
         qDebug() << "onlineurl" << url;
         // 发起获取在线URL的请求
@@ -651,13 +653,16 @@ void UseNetwork::parseOnlineUrlForList(QList<Music>& musicList)
                 QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
                 if (!jsonDoc.isNull() && jsonDoc.isObject()) {
                     QJsonObject jsonObj = jsonDoc.object();
-                    if (jsonObj.contains("data") && jsonObj["data"].isObject())
+                    if (jsonObj.contains("data") && jsonObj["data"].isArray())
                     {
-                        QJsonObject dataObj = jsonObj["data"].toObject();
-                        if (dataObj.contains("url") && dataObj["url"].isString())
-                        {
-                            QString onlineUrl = dataObj["url"].toString();
-                            music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
+                        QJsonArray dataArray = jsonObj["data"].toArray();
+                        if (!dataArray.isEmpty()) {
+                            QJsonObject dataObj = dataArray[0].toObject();
+                            if (dataObj.contains("url") && dataObj["url"].isString())
+                            {
+                                QString onlineUrl = dataObj["url"].toString();
+                                music.setUrl(onlineUrl); // 假设 Music 类中有 setOnlineUrl 方法
+                            }
                         }
                     }
                 }

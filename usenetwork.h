@@ -16,6 +16,8 @@
 #include <QFutureWatcher>
 #include <QVector>
 #include <QDateTime>
+#include <QNetworkCookie>
+#include <QNetworkCookieJar>
 
 #include "music.h"
 #include "playlist.h"
