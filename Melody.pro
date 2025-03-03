@@ -12,6 +12,7 @@ SOURCES += \
     listwidgetlocal.cpp \
     main.cpp \
     musiceditdialog.cpp \
+    myplaylist.cpp \
     showitem.cpp \
     showplaylistitem.cpp \
     showplaylistmusicitem.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     listwidgetlocal.h \
     music.h \
     musiceditdialog.h \
+    myplaylist.h \
     showitem.h \
     showplaylistitem.h \
     showplaylistmusicitem.h \
